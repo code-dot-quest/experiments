@@ -1,5 +1,7 @@
 # Aseprite
 
+## Animation
+
 1. Open the .aseprite file in Aseprite native app
 
 2. Go to "File - Export Sprite Sheet"
@@ -37,3 +39,15 @@
     e. In the "Item Filename" input box, make sure it says just "{frame}" and nothing more.
  
 7. Click export
+
+## Static Tiles
+
+1. In Aseprite native app "File - Import Sprice Sheet"
+
+    a. "Select File" the relevant .aseprite file
+
+    b. "Width" = 128 and "Height" = 128
+
+    c. Click import
+
+2. Continue from step 2 above

@@ -4,17 +4,20 @@ import * as editorJson from "./editor.json";
 type OnTileSelected = (frameId: string) => void;
 
 export default class Editor {
-  selectedFrameId: string = "26";
+  selectedFrameId: string;
   private onTileSelectedHandler: OnTileSelected;
 
   constructor() {
+    this.selectedFrameId = this.getDefaultFrameId();
     const instance = this;
     $(() => {
       for (const tile of editorJson.tiles) {
         $(
-          `<span class="editor-tile" style="background:url(${editorJson.tilesImage.src}); background-position:-${Math.ceil(tile.frame.x / 2) + 1}px -${
-            Math.ceil(tile.frame.y / 2) + 1
-          }px; background-size:${editorJson.tilesImage.w / 2}px ${editorJson.tilesImage.h / 2}px;" x-frame="${tile.frameId}" />`
+          `<span class="editor-tile" x-frame="${tile.frameId}" style="` +
+            `background:url(${editorJson.tilesImage.src});` +
+            `background-position:-${Math.ceil(tile.frame.x / 2) + 1}px -${Math.ceil(tile.frame.y / 2) + 1}px;` +
+            `background-size:${editorJson.tilesImage.w / 2}px ${editorJson.tilesImage.h / 2}px;` +
+            `" />`
         ).appendTo("#editor-tiles-parent");
       }
       $("span.editor-tile").on("click", (event) => {
@@ -28,5 +31,9 @@ export default class Editor {
 
   onTileSelected(handler: OnTileSelected) {
     this.onTileSelectedHandler = handler;
+  }
+
+  getDefaultFrameId(): string {
+    return editorJson.defaultFrameId;
   }
 }

@@ -1,14 +1,15 @@
 import "phaser";
 import Editor from "./editor";
+import Map from "./map";
 
 const TILE_SIZE = 128;
 const editor = new Editor();
 
 export default class Demo extends Phaser.Scene {
-  map: Phaser.GameObjects.Sprite[][];
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   player: Phaser.GameObjects.Sprite;
   stamp: Phaser.GameObjects.Sprite;
+  map: Map;
 
   constructor() {
     super("demo");
@@ -23,13 +24,8 @@ export default class Demo extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.anims.createFromAseprite("knight");
 
-    this.map = [];
-    for (let y = 0; y < 10; y++) {
-      this.map[y] = [];
-      for (let x = 0; x < 10; x++) {
-        this.map[y][x] = this.add.sprite(x * TILE_SIZE, y * TILE_SIZE, "tiles", 26).setOrigin(0, 0);
-      }
-    }
+    this.map = new Map(this, 10, 10, TILE_SIZE);
+    this.map.initializeGround(editor.getDefaultFrameId());
 
     this.stamp = this.add.sprite(0, 0, "tiles", editor.selectedFrameId).setOrigin(0, 0).setAlpha(0.8);
 
@@ -51,7 +47,7 @@ export default class Demo extends Phaser.Scene {
     this.stamp.setPosition(pointerX * TILE_SIZE, pointerY * TILE_SIZE);
     this.stamp.setVisible(time - this.input.activePointer.time < 2000);
     if (this.input.manager.activePointer.isDown) {
-      this.map[pointerY][pointerX]?.setFrame(editor.selectedFrameId);
+      this.map.setGround(pointerX, pointerY, editor.selectedFrameId);
     }
 
     if (this.cursors.left.isDown) {

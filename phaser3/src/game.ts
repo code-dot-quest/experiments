@@ -27,7 +27,7 @@ export default class Demo extends Phaser.Scene {
     for (let y=0; y<10; y++) {
       this.map[y] = [];
       for (let x=0; x<10; x++) {
-        this.map[y][x] = this.add.sprite(x*TILE_SIZE, y*TILE_SIZE, 'tiles', y*10+x).setOrigin(0, 0);
+        this.map[y][x] = this.add.sprite(x*TILE_SIZE, y*TILE_SIZE, 'tiles', 26).setOrigin(0, 0);
       }
     }
 

@@ -31,7 +31,7 @@ export default class Demo extends Phaser.Scene {
       }
     }
 
-    this.stamp = this.add.sprite(0, 0, 'tiles', 0).setOrigin(0, 0).setAlpha(0.8);
+    this.stamp = this.add.sprite(0, 0, 'tiles', editor.selectedFrameId).setOrigin(0, 0).setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, 128, 128).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
     this.add.grid(0, 0, 1280, 1280, 128, 128).setOrigin(0, 0).setOutlineStyle(0xffffff, 0.20);
@@ -44,11 +44,12 @@ export default class Demo extends Phaser.Scene {
     });
   }
 
-  update() {
+  update(time) {
     const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
     const pointerX = Math.floor(worldPoint.x / TILE_SIZE);
     const pointerY = Math.floor(worldPoint.y / TILE_SIZE);
     this.stamp.setPosition(pointerX*TILE_SIZE, pointerY*TILE_SIZE);
+    this.stamp.setVisible(time - this.input.activePointer.time < 2000);
     if (this.input.manager.activePointer.isDown) {
       this.map[pointerY][pointerX]?.setFrame(editor.selectedFrameId);
     }

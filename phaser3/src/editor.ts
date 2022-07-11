@@ -2,10 +2,14 @@ import $ from "cash-dom";
 import * as editorJson from "./editor.json";
 
 type OnTileSelected = (frameId: string) => void;
+type OnSave = () => void;
+type OnLoad = (json: any) => void;
 
 export default class Editor {
   selectedFrameId: string;
-  private onTileSelectedHandler: OnTileSelected;
+  protected onTileSelectedHandler: OnTileSelected;
+  protected onSaveHandler: OnSave;
+  protected onLoadHandler: OnLoad;
 
   constructor() {
     this.selectedFrameId = this.getDefaultFrameId();
@@ -26,11 +30,37 @@ export default class Editor {
         instance.selectedFrameId = frameId;
         if (this.onTileSelectedHandler) this.onTileSelectedHandler(frameId);
       });
+      $("#editor-save").on("click", () => {
+        if (this.onSaveHandler) this.onSaveHandler();
+      });
+      $("#editor-load").on("click", () => {
+        $("#editor-load-file").trigger("click");
+      });
+      $("#editor-load-file").on("change", (event) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const json = JSON.parse(reader.result as string);
+            if (this.onLoadHandler) this.onLoadHandler(json);
+          } catch (e) {
+            console.error(e);
+          }
+        };
+        reader.readAsText(event.target.files[0]);
+      });
     });
   }
 
   onTileSelected(handler: OnTileSelected) {
     this.onTileSelectedHandler = handler;
+  }
+
+  onSave(handler: OnSave) {
+    this.onSaveHandler = handler;
+  }
+
+  onLoad(handler: OnLoad) {
+    this.onLoadHandler = handler;
   }
 
   getDefaultFrameId(): string {

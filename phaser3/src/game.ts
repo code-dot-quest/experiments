@@ -1,9 +1,14 @@
 import "phaser";
+import { saveAs } from "file-saver";
 import Editor from "./editor";
-import Map from "./map";
+import Map, { MapJson } from "./map";
 
 const TILE_SIZE = 128;
 const editor = new Editor();
+
+interface LevelJson {
+  map: MapJson;
+}
 
 export default class Demo extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -37,6 +42,15 @@ export default class Demo extends Phaser.Scene {
 
     editor.onTileSelected((frameId) => {
       this.stamp.setFrame(frameId);
+    });
+    editor.onSave(() => {
+      const levelJson = { map: this.map.saveToJson() };
+      const blob = new Blob([JSON.stringify(levelJson)], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "level.json");
+    });
+    editor.onLoad((json: any) => {
+      const levelJson = json as LevelJson;
+      this.map.loadFromJson(levelJson.map);
     });
   }
 

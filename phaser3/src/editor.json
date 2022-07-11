@@ -1,0 +1,21 @@
+{ 
+  "tilesImage": {
+    "src": "assets/tiles.png",
+    "w": 790,
+    "h": 786
+  },
+  "tiles": [
+    {
+      "frameId": "0",
+      "frame": { "x": 1, "y": 1, "w": 130, "h": 130 }
+     },
+     {
+      "frameId": "1",
+      "frame": { "x": 132, "y": 1, "w": 130, "h": 130 }
+     },
+     {
+       "frameId": "2",
+       "frame": { "x": 263, "y": 1, "w": 130, "h": 130 }
+     }
+  ]
+}

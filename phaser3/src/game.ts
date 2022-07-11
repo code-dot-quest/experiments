@@ -1,6 +1,8 @@
 import 'phaser';
+import Editor from './editor';
 
 const TILE_SIZE = 128;
+const editor = new Editor();
 
 export default class Demo extends Phaser.Scene {
   map: Phaser.GameObjects.Sprite[][];
@@ -36,6 +38,10 @@ export default class Demo extends Phaser.Scene {
 
     this.player = this.add.sprite(100, 100, 'knight').play({ key: 'Idle', repeat: -1 });
     this.add.sprite(200, 200, 'knight').play({ key: 'Attack_1', repeat: -1 });
+
+    editor.onTileSelected((frameId) => {
+      this.stamp.setFrame(frameId);
+    });
   }
 
   update() {
@@ -44,7 +50,7 @@ export default class Demo extends Phaser.Scene {
     const pointerY = Math.floor(worldPoint.y / TILE_SIZE);
     this.stamp.setPosition(pointerX*TILE_SIZE, pointerY*TILE_SIZE);
     if (this.input.manager.activePointer.isDown) {
-      this.map[pointerY][pointerX].setFrame(0);
+      this.map[pointerY][pointerX]?.setFrame(editor.selectedFrameId);
     }
 
     if (this.cursors.left.isDown) {
@@ -78,6 +84,7 @@ const config = {
   height: 1280,
   scene: Demo,
   zoom: 0.5,
+  parent: 'canvas-parent'
 };
 
 const game = new Phaser.Game(config);

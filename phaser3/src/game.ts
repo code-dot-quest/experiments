@@ -1,7 +1,8 @@
 import "phaser";
 import { saveAs } from "file-saver";
 import Editor from "./editor";
-import Map, { MapJson } from "./map";
+import Map, { MapJson } from "./world/map";
+import Ground from "./world/ground";
 
 const TILE_SIZE = 128;
 const editor = new Editor();
@@ -13,7 +14,7 @@ interface LevelJson {
 export default class Demo extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   player: Phaser.GameObjects.Sprite;
-  stamp: Phaser.GameObjects.Sprite;
+  stamp: Ground;
   map: Map;
 
   constructor() {
@@ -30,9 +31,10 @@ export default class Demo extends Phaser.Scene {
     this.anims.createFromAseprite("knight");
 
     this.map = new Map(this, 10, 10, TILE_SIZE);
-    this.map.initializeGround(editor.getDefaultFrameId());
+    this.map.initialize(editor.getDefaultGround());
 
-    this.stamp = this.add.sprite(0, 0, "tiles", editor.selectedFrameId).setOrigin(0, 0).setAlpha(0.8);
+    this.stamp = new Ground(this, TILE_SIZE, 0, 0).set(editor.selectedGround);
+    this.stamp.sprite.setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, 128, 128).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
     this.add.grid(0, 0, 1280, 1280, 128, 128).setOrigin(0, 0).setOutlineStyle(0xffffff, 0.2);
@@ -40,8 +42,8 @@ export default class Demo extends Phaser.Scene {
     this.player = this.add.sprite(100, 100, "knight").play({ key: "Idle", repeat: -1 });
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 });
 
-    editor.onTileSelected((frameId) => {
-      this.stamp.setFrame(frameId);
+    editor.onGroundSelected((ground) => {
+      this.stamp.set(ground);
     });
     editor.onSave(() => {
       const levelJson = { map: this.map.saveToJson() };
@@ -58,10 +60,10 @@ export default class Demo extends Phaser.Scene {
     const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
     const pointerX = Math.floor(worldPoint.x / TILE_SIZE);
     const pointerY = Math.floor(worldPoint.y / TILE_SIZE);
-    this.stamp.setPosition(pointerX * TILE_SIZE, pointerY * TILE_SIZE);
-    this.stamp.setVisible(time - this.input.activePointer.time < 2000);
+    this.stamp.sprite.setPosition(pointerX * TILE_SIZE, pointerY * TILE_SIZE);
+    this.stamp.sprite.setVisible(time - this.input.activePointer.time < 2000);
     if (this.input.manager.activePointer.isDown) {
-      this.map.setGround(pointerX, pointerY, editor.selectedFrameId);
+      this.map.setGround(pointerX, pointerY, editor.selectedGround);
     }
 
     if (this.cursors.left.isDown) {

@@ -1,77 +1,97 @@
 {
-  "tilesImage": {
+  "groundSpriteSheet": {
     "src": "assets/tiles.png",
     "w": 790,
     "h": 786
   },
-  "defaultFrameId": "26",
-  "tiles": [
+  "defaultGround": {
+    "kind": "grass",
+    "type": "common"
+  },
+  "ground": [
     {
-      "frameId": "0",
+      "kind": "water",
+      "type": "small-small-stones",
       "frame": { "x": 1, "y": 1, "w": 130, "h": 130 }
     },
     {
-      "frameId": "1",
+      "kind": "water",
+      "type": "small-large-stones",
       "frame": { "x": 132, "y": 1, "w": 130, "h": 130 }
     },
     {
-      "frameId": "2",
+      "kind": "water",
+      "type": "large-small-stones",
       "frame": { "x": 263, "y": 1, "w": 130, "h": 130 }
     },
     {
-      "frameId": "3",
+      "kind": "water",
+      "type": "clear",
       "frame": { "x": 394, "y": 1, "w": 130, "h": 130 }
     },
     {
-      "frameId": "10",
+      "kind": "grass-water",
+      "type": "grass-89",
       "frame": { "x": 656, "y": 1, "w": 130, "h": 130 }
     },
     {
-      "frameId": "11",
+      "kind": "grass-water",
+      "type": "grass-789",
       "frame": { "x": 1, "y": 132, "w": 130, "h": 130 }
     },
     {
-      "frameId": "12",
+      "kind": "grass-water",
+      "type": "grass-78",
       "frame": { "x": 132, "y": 132, "w": 130, "h": 130 }
     },
     {
-      "frameId": "20",
+      "kind": "grass-water",
+      "type": "water-147",
       "frame": { "x": 132, "y": 263, "w": 130, "h": 130 }
     },
     {
-      "frameId": "21",
+      "kind": "grass",
+      "type": "common",
       "frame": { "x": 263, "y": 263, "w": 130, "h": 130 }
     },
     {
-      "frameId": "22",
+      "kind": "grass-water",
+      "type": "water-369",
       "frame": { "x": 394, "y": 263, "w": 130, "h": 130 }
     },
     {
-      "frameId": "23",
+      "kind": "grass-water",
+      "type": "water-9",
       "frame": { "x": 525, "y": 263, "w": 130, "h": 130 }
     },
     {
-      "frameId": "24",
+      "kind": "grass-water",
+      "type": "water-7",
       "frame": { "x": 656, "y": 263, "w": 130, "h": 130 }
     },
     {
-      "frameId": "30",
+      "kind": "grass-water",
+      "type": "water-14789",
       "frame": { "x": 525, "y": 394, "w": 130, "h": 130 }
     },
     {
-      "frameId": "31",
+      "kind": "grass-water",
+      "type": "water-789",
       "frame": { "x": 656, "y": 394, "w": 130, "h": 130 }
     },
     {
-      "frameId": "32",
+      "kind": "grass-water",
+      "type": "water-36789",
       "frame": { "x": 1, "y": 525, "w": 130, "h": 130 }
     },
     {
-      "frameId": "33",
+      "kind": "grass-water",
+      "type": "water-36",
       "frame": { "x": 132, "y": 525, "w": 130, "h": 130 }
     },
     {
-      "frameId": "34",
+      "kind": "grass-water",
+      "type": "water-12",
       "frame": { "x": 263, "y": 525, "w": 130, "h": 130 }
     }
   ]

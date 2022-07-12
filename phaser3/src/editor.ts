@@ -1,34 +1,37 @@
 import $ from "cash-dom";
-import * as editorJson from "./editor.json";
+import editorSpec from "./editor.json";
+import { GroundType } from "./world/ground";
 
-type OnTileSelected = (frameId: string) => void;
+type OnGroundSelected = (ground: GroundType) => void;
 type OnSave = () => void;
 type OnLoad = (json: any) => void;
 
 export default class Editor {
-  selectedFrameId: string;
-  protected onTileSelectedHandler: OnTileSelected;
+  selectedGround: GroundType;
+  protected onGroundSelectedHandler: OnGroundSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
 
   constructor() {
-    this.selectedFrameId = this.getDefaultFrameId();
+    this.selectedGround = this.getDefaultGround();
     const instance = this;
     $(() => {
-      for (const tile of editorJson.tiles) {
+      for (const ground of editorSpec.ground) {
         $(
-          `<span class="editor-tile" x-frame="${tile.frameId}" style="` +
-            `background:url(${editorJson.tilesImage.src});` +
-            `background-position:-${Math.ceil(tile.frame.x / 2) + 1}px -${Math.ceil(tile.frame.y / 2) + 1}px;` +
-            `background-size:${editorJson.tilesImage.w / 2}px ${editorJson.tilesImage.h / 2}px;` +
+          `<span class="editor-tile" x-kind="${ground.kind}" x-type="${ground.type}" style="` +
+            `background:url(${editorSpec.groundSpriteSheet.src});` +
+            `background-position:-${Math.ceil(ground.frame.x / 2) + 1}px -${Math.ceil(ground.frame.y / 2) + 1}px;` +
+            `background-size:${editorSpec.groundSpriteSheet.w / 2}px ${editorSpec.groundSpriteSheet.h / 2}px;` +
             `" />`
         ).appendTo("#editor-tiles-parent");
       }
       $("span.editor-tile").on("click", (event) => {
         $("span.editor-tile.selected").removeClass("selected");
-        const frameId = $(event.currentTarget).addClass("selected").attr("x-frame");
-        instance.selectedFrameId = frameId;
-        if (this.onTileSelectedHandler) this.onTileSelectedHandler(frameId);
+        const $el = $(event.currentTarget).addClass("selected");
+        const kind = $el.attr("x-kind");
+        const type = $el.attr("x-type");
+        instance.selectedGround = { kind, type };
+        if (this.onGroundSelectedHandler) this.onGroundSelectedHandler(instance.selectedGround);
       });
       $("#editor-save").on("click", () => {
         if (this.onSaveHandler) this.onSaveHandler();
@@ -51,8 +54,8 @@ export default class Editor {
     });
   }
 
-  onTileSelected(handler: OnTileSelected) {
-    this.onTileSelectedHandler = handler;
+  onGroundSelected(handler: OnGroundSelected) {
+    this.onGroundSelectedHandler = handler;
   }
 
   onSave(handler: OnSave) {
@@ -63,7 +66,7 @@ export default class Editor {
     this.onLoadHandler = handler;
   }
 
-  getDefaultFrameId(): string {
-    return editorJson.defaultFrameId;
+  getDefaultGround(): GroundType {
+    return editorSpec.defaultGround;
   }
 }

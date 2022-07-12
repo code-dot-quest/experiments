@@ -9,14 +9,14 @@ export default class Map {
   protected ground: Ground[][];
   protected movables: Set<Movable>[][];
 
-  constructor(protected scene: Phaser.Scene, public widthTiles: number, public heightTiles: number, public tileSizePx: number) {}
+  constructor(protected scene: Phaser.Scene, public widthTiles: number, public heightTiles: number) {}
 
   initialize(defaultGround: GroundType) {
     this.ground = [];
     for (let yTiles = 0; yTiles < this.heightTiles; yTiles++) {
       this.ground[yTiles] = [];
       for (let xTiles = 0; xTiles < this.widthTiles; xTiles++) {
-        const ground = new Ground(this.scene, this.tileSizePx, xTiles, yTiles).set(defaultGround);
+        const ground = new Ground(this.scene, xTiles, yTiles).set(defaultGround);
         this.ground[yTiles][xTiles] = ground;
       }
     }

@@ -1,4 +1,4 @@
 {
   "tileSize": 128,
-  "posInTileRadius": 22
+  "passableRadius": 22
 }

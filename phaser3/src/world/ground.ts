@@ -7,7 +7,7 @@ export interface GroundType {
 }
 
 export interface GroundSpec {
-  passable: { up?: boolean; down?: boolean; left?: boolean; right?: boolean };
+  passable: { up?: boolean; down?: boolean; left?: boolean; right?: boolean; radius?: number };
   sprite: { resource: string; frame: string };
 }
 

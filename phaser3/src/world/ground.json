@@ -54,7 +54,7 @@
         "sprite": { "resource": "tiles", "frame": "30" }
       },
       "water-789": {
-        "passable": { "up": true, "left": true, "right": true },
+        "passable": { "up": true, "left": true, "right": true, "radius": 5 },
         "sprite": { "resource": "tiles", "frame": "31" }
       },
       "water-36789": {

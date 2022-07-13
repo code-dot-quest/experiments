@@ -36,8 +36,9 @@ export default class Movable {
     this.y = y;
     this.posInTile = this.map.getMoveableFreePosInTile(x, y);
     this.map.addMovable(x, y, this);
-    const pixelX = x * commonSpec.tileSize + commonSpec.tileSize / 2 + commonSpec.posInTileRadius * Math.sin(this.posInTile * Math.PI);
-    const pixelY = y * commonSpec.tileSize + commonSpec.tileSize / 2 + commonSpec.posInTileRadius * Math.cos(this.posInTile * Math.PI);
+    const passableRadius = this.map.getGround(x, y).spec.passable.radius ?? commonSpec.passableRadius;
+    const pixelX = x * commonSpec.tileSize + commonSpec.tileSize / 2 + passableRadius * Math.sin(this.posInTile * Math.PI);
+    const pixelY = y * commonSpec.tileSize + commonSpec.tileSize / 2 + passableRadius * Math.cos(this.posInTile * Math.PI);
     return { pixelX, pixelY };
   }
 

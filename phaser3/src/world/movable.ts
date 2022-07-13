@@ -71,6 +71,8 @@ export default class Movable {
     const { pixelX, pixelY } = this.setPosition(x, y);
     if (pixelX > this.sprite.x) this.sprite.flipX = false;
     if (pixelX < this.sprite.x) this.sprite.flipX = true;
+    this.sprite.play({ key: this.spec.anims.move, repeat: -1 });
+    this.moving = true;
     this.scene.tweens.add({
       targets: this.sprite,
       x: pixelX,
@@ -81,8 +83,6 @@ export default class Movable {
         this.moving = false;
       },
     });
-    this.sprite.play({ key: this.spec.anims.move, repeat: -1 });
-    this.moving = true;
     return this;
   }
 }

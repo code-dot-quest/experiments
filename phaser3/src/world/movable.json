@@ -2,7 +2,7 @@
   "knight": {
     "types": {
       "blue": {
-        "speed": 2,
+        "speed": 1.7,
         "anims": { "idle": "Idle", "move": "Run" },
         "sprite": { "resource": "knight", "origin": { "x": 0.5, "y": 0.7 } }
       }

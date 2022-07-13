@@ -4,7 +4,7 @@ import Editor from "./editor";
 import Map, { MapJson } from "./world/map";
 import Ground from "./world/ground";
 import Movable from "./world/movable";
-import configSpec from "./world/config.json";
+import commonSpec from "./world/common.json";
 
 const editor = new Editor();
 
@@ -14,7 +14,7 @@ interface LevelJson {
 
 export default class Demo extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-  player: Phaser.GameObjects.Sprite;
+  player: Movable;
   stamp: Ground;
   map: Map;
 
@@ -39,11 +39,11 @@ export default class Demo extends Phaser.Scene {
 
     //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
     this.add
-      .grid(0, 0, 10 * configSpec.tileSize, 10 * configSpec.tileSize, configSpec.tileSize, configSpec.tileSize)
+      .grid(0, 0, 10 * commonSpec.tileSize, 10 * commonSpec.tileSize, commonSpec.tileSize, commonSpec.tileSize)
       .setOrigin(0, 0)
       .setOutlineStyle(0xffffff, 0.2);
 
-    this.player = this.add.sprite(100, 100, "knight").play({ key: "Idle", repeat: -1 });
+    this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 });
 
     editor.onGroundSelected((ground) => {
@@ -62,30 +62,22 @@ export default class Demo extends Phaser.Scene {
 
   update(time) {
     const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
-    const pointerX = Math.floor(worldPoint.x / configSpec.tileSize);
-    const pointerY = Math.floor(worldPoint.y / configSpec.tileSize);
-    this.stamp.sprite.setPosition(pointerX * configSpec.tileSize, pointerY * configSpec.tileSize);
+    const pointerX = Math.floor(worldPoint.x / commonSpec.tileSize);
+    const pointerY = Math.floor(worldPoint.y / commonSpec.tileSize);
+    this.stamp.sprite.setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
     this.stamp.sprite.setVisible(time - this.input.activePointer.time < 2000);
     if (this.input.manager.activePointer.isDown) {
       this.map.setGround(pointerX, pointerY, editor.selectedGround);
     }
 
     if (this.cursors.left.isDown) {
-      this.player.play({ key: "Run" }, true);
-      this.player.setX(this.player.x - 2);
-      this.player.flipX = true;
+      this.player.move("left");
     } else if (this.cursors.right.isDown) {
-      this.player.play({ key: "Run" }, true);
-      this.player.setX(this.player.x + 2);
-      this.player.flipX = false;
+      this.player.move("right");
     } else if (this.cursors.up.isDown) {
-      this.player.play({ key: "Run" }, true);
-      this.player.setY(this.player.y - 2);
+      this.player.move("up");
     } else if (this.cursors.down.isDown) {
-      this.player.play({ key: "Run" }, true);
-      this.player.setY(this.player.y + 2);
-    } else {
-      this.player.play({ key: "Idle", repeat: -1 }, true);
+      this.player.move("down");
     }
   }
 }

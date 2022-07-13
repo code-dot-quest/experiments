@@ -9,23 +9,54 @@ export default class Map {
   protected ground: Ground[][];
   protected movables: Set<Movable>[][];
 
-  constructor(protected scene: Phaser.Scene, public widthTiles: number, public heightTiles: number) {}
+  constructor(protected scene: Phaser.Scene, public width: number, public height: number) {}
 
   initialize(defaultGround: GroundType) {
     this.ground = [];
-    for (let yTiles = 0; yTiles < this.heightTiles; yTiles++) {
-      this.ground[yTiles] = [];
-      for (let xTiles = 0; xTiles < this.widthTiles; xTiles++) {
-        const ground = new Ground(this.scene, xTiles, yTiles).set(defaultGround);
-        this.ground[yTiles][xTiles] = ground;
+    this.movables = [];
+    for (let y = 0; y < this.height; y++) {
+      this.ground[y] = [];
+      this.movables[y] = [];
+      for (let x = 0; x < this.width; x++) {
+        const ground = new Ground(this.scene, x, y).set(defaultGround);
+        this.ground[y][x] = ground;
+        this.movables[y][x] = new Set<Movable>();
       }
     }
   }
 
-  setGround(xTiles: number, yTiles: number, ground: GroundType) {
-    if (xTiles >= this.widthTiles || xTiles < 0) return;
-    if (yTiles >= this.heightTiles || yTiles < 0) return;
-    this.ground[yTiles][xTiles].set(ground);
+  setGround(x: number, y: number, ground: GroundType) {
+    if (x >= this.width || x < 0) return;
+    if (y >= this.height || y < 0) return;
+    this.ground[y][x].set(ground);
+  }
+
+  addMovable(x: number, y: number, movable: Movable) {
+    if (x >= this.width || x < 0) return;
+    if (y >= this.height || y < 0) return;
+    this.movables[y][x].add(movable);
+  }
+
+  getMoveableFreePosInTile(x: number, y: number) {
+    const movablesOnTile = this.movables[y][x];
+    let numerator = 0;
+    let denominator = 0.5;
+    while (denominator <= 16) {
+      while (numerator < 2 * denominator) {
+        let alreadyUsed = false;
+        for (const other of Array.from(movablesOnTile)) {
+          if (numerator / denominator == other.posInTile) {
+            alreadyUsed = true;
+            break;
+          }
+        }
+        if (!alreadyUsed) return numerator / denominator;
+        numerator += 2;
+      }
+      numerator = 1;
+      denominator *= 2;
+    }
+    return numerator / denominator;
   }
 
   saveToJson(): MapJson {
@@ -35,9 +66,9 @@ export default class Map {
   }
 
   loadFromJson(json: MapJson) {
-    for (let yTiles = 0; yTiles < this.heightTiles; yTiles++) {
-      for (let xTiles = 0; xTiles < this.widthTiles; xTiles++) {
-        this.setGround(xTiles, yTiles, json.ground[yTiles][xTiles]);
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        this.setGround(x, y, json.ground[y][x]);
       }
     }
   }

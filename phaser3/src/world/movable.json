@@ -1,7 +1,10 @@
 {
   "knight": {
     "types": {
-      "blue": {}
+      "blue": {
+        "anims": { "idle": "Idle" },
+        "sprite": { "resource": "knight", "origin": { "x": 0.5, "y": 0.7 } }
+      }
     }
   }
 }

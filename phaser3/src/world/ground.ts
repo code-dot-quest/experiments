@@ -1,5 +1,5 @@
 import groundSpec from "./ground.json";
-import configSpec from "./config.json";
+import commonSpec from "./common.json";
 
 export interface GroundType {
   kind: string;
@@ -16,7 +16,7 @@ export default class Ground {
   public spec: GroundSpec;
   public sprite: Phaser.GameObjects.Sprite;
 
-  constructor(protected scene: Phaser.Scene, protected xTiles: number, protected yTiles: number) {}
+  constructor(protected scene: Phaser.Scene, protected x: number, protected y: number) {}
 
   set(ground: GroundType): Ground {
     this.ground = ground;
@@ -24,7 +24,7 @@ export default class Ground {
     const frame = this.spec.sprite.frame;
     const resource = this.spec.sprite.resource;
     if (!this.sprite) {
-      this.sprite = this.scene.add.sprite(this.xTiles * configSpec.tileSize, this.yTiles * configSpec.tileSize, resource, frame);
+      this.sprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
       this.sprite.setOrigin(0, 0);
     } else {
       // TODO: support different resource here

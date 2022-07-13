@@ -44,7 +44,7 @@ export default class Demo extends Phaser.Scene {
       .setOutlineStyle(0xffffff, 0.2);
 
     this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
-    this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 });
+    this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 }).setOrigin(0.5, 0.7).setDepth(200);
 
     editor.onGroundSelected((ground) => {
       this.stamp.set(ground);

@@ -47,6 +47,7 @@ export default class Movable {
     this.spec = movableSpec[movable.kind].types[movable.type];
     const { pixelX, pixelY } = this.setPosition(x, y);
     this.sprite = this.scene.add.sprite(pixelX, pixelY, this.spec.sprite.resource);
+    this.sprite.setDepth(pixelY);
     this.sprite.setOrigin(this.spec.sprite.origin.x, this.spec.sprite.origin.y);
     this.sprite.play({ key: this.spec.anims.idle, repeat: -1 });
     this.moving = false;
@@ -78,6 +79,7 @@ export default class Movable {
       targets: this.sprite,
       x: pixelX,
       y: pixelY,
+      depth: pixelY,
       duration: 1000 / this.spec.speed,
       onComplete: () => {
         this.sprite.play({ key: this.spec.anims.idle, repeat: -1 });

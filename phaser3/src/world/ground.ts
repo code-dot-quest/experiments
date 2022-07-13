@@ -7,7 +7,7 @@ export interface GroundType {
 }
 
 export interface GroundSpec {
-  passable: { top?: boolean; right?: boolean; bottom?: boolean; left?: boolean };
+  passable: { up?: boolean; down?: boolean; left?: boolean; right?: boolean };
   sprite: { resource: string; frame: string };
 }
 
@@ -17,6 +17,10 @@ export default class Ground {
   public sprite: Phaser.GameObjects.Sprite;
 
   constructor(protected scene: Phaser.Scene, protected x: number, protected y: number) {}
+
+  getPosition(): { x: number; y: number } {
+    return { x: this.x, y: this.y };
+  }
 
   set(ground: GroundType): Ground {
     this.ground = ground;

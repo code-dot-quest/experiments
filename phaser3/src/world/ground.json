@@ -34,39 +34,39 @@
         "sprite": { "resource": "tiles", "frame": "12" }
       },
       "water-147": {
-        "passable": { "top": true, "right": true, "bottom": true },
+        "passable": { "up": true, "down": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "20" }
       },
       "water-369": {
-        "passable": { "top": true, "bottom": true, "left": true },
+        "passable": { "up": true, "down": true, "left": true },
         "sprite": { "resource": "tiles", "frame": "22" }
       },
       "water-9": {
-        "passable": { "top": true, "right": true, "bottom": true, "left": true },
+        "passable": { "up": true, "down": true, "left": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "23" }
       },
       "water-7": {
-        "passable": { "top": true, "right": true, "bottom": true, "left": true },
+        "passable": { "up": true, "down": true, "left": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "24" }
       },
       "water-14789": {
-        "passable": { "top": true, "right": true },
+        "passable": { "up": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "30" }
       },
       "water-789": {
-        "passable": { "top": true, "right": true, "left": true },
+        "passable": { "up": true, "left": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "31" }
       },
       "water-36789": {
-        "passable": { "top": true, "left": true },
+        "passable": { "up": true, "left": true },
         "sprite": { "resource": "tiles", "frame": "32" }
       },
       "water-36": {
-        "passable": { "top": true, "bottom": true, "left": true },
+        "passable": { "up": true, "down": true, "left": true },
         "sprite": { "resource": "tiles", "frame": "33" }
       },
       "water-12": {
-        "passable": { "top": true, "right": true, "bottom": true },
+        "passable": { "up": true, "down": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "34" }
       }
     }
@@ -74,7 +74,7 @@
   "grass": {
     "types": {
       "common": {
-        "passable": { "top": true, "right": true, "bottom": true, "left": true },
+        "passable": { "up": true, "down": true, "left": true, "right": true },
         "sprite": { "resource": "tiles", "frame": "21" }
       }
     }

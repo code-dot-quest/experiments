@@ -31,10 +31,23 @@ export default class Map {
     this.ground[y][x].set(ground);
   }
 
+  getGround(x: number, y: number): Ground | undefined {
+    if (x >= this.width || x < 0) return undefined;
+    if (y >= this.height || y < 0) return undefined;
+    return this.ground[y][x];
+  }
+
   addMovable(x: number, y: number, movable: Movable) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
     this.movables[y][x].add(movable);
+  }
+
+  removeMovable(movable: Movable) {
+    const { x, y } = movable.getPosition();
+    if (x >= this.width || x < 0) return;
+    if (y >= this.height || y < 0) return;
+    this.movables[y][x].delete(movable);
   }
 
   getMoveableFreePosInTile(x: number, y: number) {

@@ -11,11 +11,26 @@
   <body>
     <div class="columns">
       <div class="column is-narrow" id="canvas-parent"></div>
-      <div class="column">
-        <div id="editor-tiles-parent"></div>
-        <button class="button is-small" id="editor-save">Save</button>
-        <button class="button is-small" id="editor-load">Load</button>
-        <input type="file" id="editor-load-file" accept=".json" hidden />
+      <div class="column is-flex is-flex-direction-column">
+        <div class="tabs is-centered is-toggle is-toggle-rounded is-small">
+          <ul>
+            <li class="is-active" x-tab="tabs-map"><a>Map</a></li>
+            <li x-tab="tabs-blocks"><a>Blocks</a></li>
+            <li x-tab="tabs-javascript"><a>JavaScript</a></li>
+          </ul>
+        </div>
+        <div class="tab-panel" id="tabs-map">
+          <div id="editor-tiles-parent"></div>
+          <button class="button is-small" id="editor-save">Save</button>
+          <button class="button is-small" id="editor-load">Load</button>
+          <input type="file" id="editor-load-file" accept=".json" hidden />  
+        </div>
+        <div class="tab-panel is-hidden is-flex-grow-1" id="tabs-blocks" style="min-height: 600px;">
+          <div id="blockly-div" style="position: absolute"></div>
+        </div>
+        <div class="tab-panel is-hidden" id="tabs-javascript">
+          coming soon
+        </div>
       </div>
     </div>
   </body>

@@ -1,3 +1,8 @@
+html, body, .columns {
+  height: 100%;
+  margin: 0;
+}
+
 span.editor-tile {
   display: inline-block; 
   width: 64px; 

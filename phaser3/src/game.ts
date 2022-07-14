@@ -1,12 +1,16 @@
 import "phaser";
 import { saveAs } from "file-saver";
-import Editor from "./editor";
+import MapEditor from "./editor/map";
 import Map, { MapJson } from "./world/map";
 import Ground from "./world/ground";
 import Movable from "./world/movable";
 import commonSpec from "./world/common.json";
+import { initializeEditor } from "./editor/common";
+import BlocksEditor from "./editor/blocks";
 
-const editor = new Editor();
+initializeEditor();
+const mapEditor = new MapEditor();
+const blocksEditor = new BlocksEditor();
 
 interface LevelJson {
   map: MapJson;
@@ -32,9 +36,9 @@ export default class Demo extends Phaser.Scene {
     this.anims.createFromAseprite("knight");
 
     this.map = new Map(this, 10, 10);
-    this.map.initialize(editor.getDefaultGround());
+    this.map.initialize(mapEditor.getDefaultGround());
 
-    this.stamp = new Ground(this, 0, 0).set(editor.selectedGround);
+    this.stamp = new Ground(this, 0, 0).set(mapEditor.selectedGround);
     this.stamp.sprite.setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
@@ -46,15 +50,15 @@ export default class Demo extends Phaser.Scene {
     this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 }).setOrigin(0.5, 0.7).setDepth(200);
 
-    editor.onGroundSelected((ground) => {
+    mapEditor.onGroundSelected((ground) => {
       this.stamp.set(ground);
     });
-    editor.onSave(() => {
+    mapEditor.onSave(() => {
       const levelJson = { map: this.map.saveToJson() };
       const blob = new Blob([JSON.stringify(levelJson)], { type: "text/plain;charset=utf-8" });
       saveAs(blob, "level.json");
     });
-    editor.onLoad((json: any) => {
+    mapEditor.onLoad((json: any) => {
       const levelJson = json as LevelJson;
       this.map.loadFromJson(levelJson.map);
     });
@@ -67,7 +71,7 @@ export default class Demo extends Phaser.Scene {
     this.stamp.sprite.setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
     this.stamp.sprite.setVisible(time - this.input.activePointer.time < 2000);
     if (this.input.manager.activePointer.isDown) {
-      this.map.setGround(pointerX, pointerY, editor.selectedGround);
+      this.map.setGround(pointerX, pointerY, mapEditor.selectedGround);
     }
 
     if (this.cursors.left.isDown) {

@@ -1,7 +1,7 @@
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 // import { uglify } from 'rollup-plugin-uglify';
 
@@ -49,14 +49,14 @@ export default {
                 'node_modules/phaser/**',
                 'node_modules/file-saver/**',
                 'node_modules/blockly/**',
-                'node_modules/cash-dom/**'
+                'node_modules/cash-dom/**',
             ],
             exclude: [ 
-                'node_modules/phaser/src/polyfills/requestAnimationFrame.js'
+                'node_modules/phaser/src/polyfills/requestAnimationFrame.js',
             ],
             sourceMap: false,
             ignoreGlobal: true,
-            namedExports: { 'file-saver': [ 'saveAs' ] }
+            
         }),
         typescript(),
         json()

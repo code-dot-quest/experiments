@@ -3,15 +3,15 @@
   "contents": [
     {
       "kind": "block",
+      "type": "on_start"
+    },
+    {
+      "kind": "block",
       "type": "move_right"
     },
     {
       "kind": "block",
       "type": "move_direction"
-    },
-    {
-      "kind": "block",
-      "type": "on_start"
     },
     {
       "kind": "block",

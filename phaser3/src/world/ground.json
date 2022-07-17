@@ -1,81 +1,173 @@
 {
   "water": {
     "types": {
-      "clear": {
+      "middle": {
         "passable": {},
-        "sprite": { "resource": "tiles", "frame": "3" }
-      },
-      "small-small-stones": {
-        "passable": {},
-        "sprite": { "resource": "tiles", "frame": "0" }
-      },
-      "small-large-stones": {
-        "passable": {},
-        "sprite": { "resource": "tiles", "frame": "1" }
-      },
-      "large-small-stones": {
-        "passable": {},
-        "sprite": { "resource": "tiles", "frame": "2" }
-      }
-    }
-  },
-  "grass-water": {
-    "types": {
-      "grass-89": {
-        "passable": {},
-        "sprite": { "resource": "tiles", "frame": "10" }
-      },
-      "grass-789": {
-        "passable": {},
-        "sprite": { "resource": "tiles", "frame": "11" }
-      },
-      "grass-78": {
-        "passable": {},
-        "sprite": { "resource": "tiles", "frame": "12" }
-      },
-      "water-147": {
-        "passable": { "up": true, "down": true, "right": true },
-        "sprite": { "resource": "tiles", "frame": "20" }
-      },
-      "water-369": {
-        "passable": { "up": true, "down": true, "left": true },
-        "sprite": { "resource": "tiles", "frame": "22" }
-      },
-      "water-9": {
-        "passable": { "up": true, "down": true, "left": true, "right": true },
-        "sprite": { "resource": "tiles", "frame": "23" }
-      },
-      "water-7": {
-        "passable": { "up": true, "down": true, "left": true, "right": true },
-        "sprite": { "resource": "tiles", "frame": "24" }
-      },
-      "water-14789": {
-        "passable": { "up": true, "right": true },
-        "sprite": { "resource": "tiles", "frame": "30" }
-      },
-      "water-789": {
-        "passable": { "up": true, "left": true, "right": true, "radius": 5 },
-        "sprite": { "resource": "tiles", "frame": "31" }
-      },
-      "water-36789": {
-        "passable": { "up": true, "left": true },
-        "sprite": { "resource": "tiles", "frame": "32" }
-      },
-      "water-36": {
-        "passable": { "up": true, "down": true, "left": true },
-        "sprite": { "resource": "tiles", "frame": "33" }
-      },
-      "water-12": {
-        "passable": { "up": true, "down": true, "right": true },
-        "sprite": { "resource": "tiles", "frame": "34" }
+        "sprite": { "resource": "tiles", "frame": "6" }
       }
     }
   },
   "grass": {
     "types": {
-      "common": {
+      "top-left": {
+        "passable": { "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "0" }
+      },
+      "top-middle": {
+        "passable": { "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "1" }
+      },
+      "top-right": {
+        "passable": { "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "2" }
+      },
+      "middle-left": {
+        "passable": { "up": true, "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "8" }
+      },
+      "middle": {
         "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "9" }
+      },
+      "middle-right": {
+        "passable": { "up": true, "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "10" }
+      },
+      "bottom-left": {
+        "passable": { "up": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "16" }
+      },
+      "bottom-middle": {
+        "passable": { "up": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "17" }
+      },
+      "bottom-right": {
+        "passable": { "up": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "18" }
+      }
+    }
+  },
+  "rock": {
+    "types": {
+      "top-left": {
+        "passable": { "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "3" }
+      },
+      "top-middle": {
+        "passable": { "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "4" }
+      },
+      "top-right": {
+        "passable": { "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "5" }
+      },
+      "middle-left": {
+        "passable": { "up": true, "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "11" }
+      },
+      "middle": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "12" }
+      },
+      "middle-right": {
+        "passable": { "up": true, "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "13" }
+      },
+      "bottom-left": {
+        "passable": { "up": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "19" }
+      },
+      "bottom-middle": {
+        "passable": { "up": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "20" }
+      },
+      "bottom-right": {
+        "passable": { "up": true, "left": true },
         "sprite": { "resource": "tiles", "frame": "21" }
+      }
+    }
+  },
+  "sand": {
+    "types": {
+      "top-left": {
+        "passable": { "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "24" }
+      },
+      "top-middle": {
+        "passable": { "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "25" }
+      },
+      "top-right": {
+        "passable": { "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "26" }
+      },
+      "middle-left": {
+        "passable": { "up": true, "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "32" }
+      },
+      "middle": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "33" }
+      },
+      "middle-right": {
+        "passable": { "up": true, "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "34" }
+      },
+      "bottom-left": {
+        "passable": { "up": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "40" }
+      },
+      "bottom-middle": {
+        "passable": { "up": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "41" }
+      },
+      "bottom-right": {
+        "passable": { "up": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "42" }
+      }
+    }
+  },
+  "cliff": {
+    "types": {
+      "bottom-left": {
+        "passable": {},
+        "sprite": { "resource": "tiles", "frame": "27" }
+      },
+      "bottom-middle": {
+        "passable": {},
+        "sprite": { "resource": "tiles", "frame": "28" }
+      },
+      "bottom-right": {
+        "passable": {},
+        "sprite": { "resource": "tiles", "frame": "29" }
+      }
+    }
+  },
+  "stairs": {
+    "types": {
+      "top-left": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "35" }
+      },
+      "top-middle": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "36" }
+      },
+      "top-right": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "37" }
+      },
+      "bottom-left": {
+        "passable": { "up": true, "down": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "43" }
+      },
+      "bottom-middle": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "tiles", "frame": "44" }
+      },
+      "bottom-right": {
+        "passable": { "up": true, "down": true, "left": true },
+        "sprite": { "resource": "tiles", "frame": "45" }
       }
     }
   }

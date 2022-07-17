@@ -1,4 +1,4 @@
 {
-  "tileSize": 128,
-  "passableRadius": 22
+  "tileSize": 64,
+  "passableRadius": 11
 }

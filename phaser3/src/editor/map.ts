@@ -20,7 +20,7 @@ export default class MapEditor {
         $(
           `<span class="editor-tile" x-kind="${ground.kind}" x-type="${ground.type}" style="` +
             `background:url(${mapEditorSpec.groundSpriteSheet.src});` +
-            `background-position:-${Math.ceil(ground.frame.x / 2) + 1}px -${Math.ceil(ground.frame.y / 2) + 1}px;` +
+            `background-position:-${Math.ceil(ground.frame.x / 2)}px -${Math.ceil(ground.frame.y / 2)}px;` +
             `background-size:${mapEditorSpec.groundSpriteSheet.w / 2}px ${mapEditorSpec.groundSpriteSheet.h / 2}px;` +
             `" />`
         ).appendTo("#editor-tiles-parent");

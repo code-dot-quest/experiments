@@ -5,8 +5,8 @@ html, body, .columns {
 
 span.editor-tile {
   display: inline-block; 
-  width: 64px; 
-  height: 64px;
+  width: 32px; 
+  height: 32px;
   background-repeat: no-repeat;
   margin-right: 6px;
   cursor: pointer;

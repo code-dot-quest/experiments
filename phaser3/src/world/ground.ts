@@ -6,15 +6,22 @@ export interface GroundType {
   type: string;
 }
 
+export type GroundLayer = "background" | "ground";
+
 export interface GroundSpec {
   passable: { up?: boolean; down?: boolean; left?: boolean; right?: boolean; radius?: number };
   sprite: { resource: string; frame: string };
 }
 
 export default class Ground {
+  // ground layer
   public ground: GroundType;
-  public spec: GroundSpec;
-  public sprite: Phaser.GameObjects.Sprite;
+  public groundSpec: GroundSpec;
+  public groundSprite: Phaser.GameObjects.Sprite;
+  // background layer
+  public background: GroundType;
+  public backgroundSpec: GroundSpec;
+  public backgroundSprite: Phaser.GameObjects.Sprite;
 
   constructor(protected scene: Phaser.Scene, protected x: number, protected y: number) {}
 
@@ -22,17 +29,32 @@ export default class Ground {
     return { x: this.x, y: this.y };
   }
 
-  set(ground: GroundType): Ground {
+  setGround(ground: GroundType): Ground {
     this.ground = ground;
-    this.spec = groundSpec[ground.kind].types[ground.type];
-    const frame = this.spec.sprite.frame;
-    const resource = this.spec.sprite.resource;
-    if (!this.sprite) {
-      this.sprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
-      this.sprite.setOrigin(0, 0);
+    this.groundSpec = groundSpec[ground.kind].types[ground.type];
+    const frame = this.groundSpec.sprite.frame;
+    const resource = this.groundSpec.sprite.resource;
+    if (!this.groundSprite) {
+      this.groundSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
+      this.groundSprite.setOrigin(0, 0).setDepth(this.y - 10000);
     } else {
       // TODO: support different resource here
-      this.sprite.setFrame(frame);
+      this.groundSprite.setFrame(frame);
+    }
+    return this;
+  }
+
+  setBackground(background: GroundType): Ground {
+    this.background = background;
+    this.backgroundSpec = groundSpec[background.kind].types[background.type];
+    const frame = this.backgroundSpec.sprite.frame;
+    const resource = this.backgroundSpec.sprite.resource;
+    if (!this.backgroundSprite) {
+      this.backgroundSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
+      this.backgroundSprite.setOrigin(0, 0).setDepth(this.y - 20000);
+    } else {
+      // TODO: support different resource here
+      this.backgroundSprite.setFrame(frame);
     }
     return this;
   }

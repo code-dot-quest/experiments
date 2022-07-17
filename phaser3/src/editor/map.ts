@@ -1,44 +1,62 @@
 import $ from "cash-dom";
 import mapEditorSpec from "./map.json";
-import { GroundType } from "../world/ground";
+import { GroundLayer, GroundType } from "../world/ground";
 
-type OnGroundSelected = (ground: GroundType) => void;
+type OnTileSelected = (ground: GroundType, layer: GroundLayer) => void;
 type OnSave = () => void;
 type OnLoad = (json: any) => void;
 
 export default class MapEditor {
-  selectedGround: GroundType;
-  protected onGroundSelectedHandler: OnGroundSelected;
+  public selectedTile: GroundType;
+  public currentLayer: GroundLayer;
+  protected onTileSelectedHandler: OnTileSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
 
   constructor() {
-    this.selectedGround = this.getDefaultGround();
+    this.selectedTile = this.getDefaultGround();
+    this.currentLayer = "ground";
     const instance = this;
     $(() => {
-      for (const ground of mapEditorSpec.ground) {
+      for (const ground of mapEditorSpec.background) {
         $(
-          `<span class="editor-tile" x-kind="${ground.kind}" x-type="${ground.type}" style="` +
+          `<span class="editor-tile" x-kind="${ground.kind}" x-type="${ground.type}" x-layer="background" style="` +
             `background:url(${mapEditorSpec.groundSpriteSheet.src});` +
             `background-position:-${Math.ceil(ground.frame.x / 2)}px -${Math.ceil(ground.frame.y / 2)}px;` +
             `background-size:${mapEditorSpec.groundSpriteSheet.w / 2}px ${mapEditorSpec.groundSpriteSheet.h / 2}px;` +
             `" />`
-        ).appendTo("#editor-tiles-parent");
+        ).appendTo("#editor-map-background");
       }
+
+      for (const ground of mapEditorSpec.ground) {
+        $(
+          `<span class="editor-tile" x-kind="${ground.kind}" x-type="${ground.type}" x-layer="ground" style="` +
+            `background:url(${mapEditorSpec.groundSpriteSheet.src});` +
+            `background-position:-${Math.ceil(ground.frame.x / 2)}px -${Math.ceil(ground.frame.y / 2)}px;` +
+            `background-size:${mapEditorSpec.groundSpriteSheet.w / 2}px ${mapEditorSpec.groundSpriteSheet.h / 2}px;` +
+            `" />`
+        ).appendTo("#editor-map-ground");
+      }
+
       $("span.editor-tile").on("click", (event) => {
         $("span.editor-tile.selected").removeClass("selected");
         const $el = $(event.currentTarget).addClass("selected");
         const kind = $el.attr("x-kind");
         const type = $el.attr("x-type");
-        instance.selectedGround = { kind, type };
-        if (this.onGroundSelectedHandler) this.onGroundSelectedHandler(instance.selectedGround);
+        const layer = $el.attr("x-layer") as GroundLayer;
+        instance.selectedTile = { kind, type };
+        instance.currentLayer = layer;
+        if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedTile, layer);
       });
+
       $("#editor-save").on("click", () => {
         if (this.onSaveHandler) this.onSaveHandler();
       });
+
       $("#editor-load").on("click", () => {
         $("#editor-load-file").trigger("click");
       });
+
       $("#editor-load-file").on("change", (event) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -54,8 +72,8 @@ export default class MapEditor {
     });
   }
 
-  onGroundSelected(handler: OnGroundSelected) {
-    this.onGroundSelectedHandler = handler;
+  onTileSelected(handler: OnTileSelected) {
+    this.onTileSelectedHandler = handler;
   }
 
   onSave(handler: OnSave) {
@@ -68,5 +86,9 @@ export default class MapEditor {
 
   getDefaultGround(): GroundType {
     return mapEditorSpec.defaultGround;
+  }
+
+  getDefaultBackground(): GroundType {
+    return mapEditorSpec.defaultBackground;
   }
 }

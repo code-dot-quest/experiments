@@ -1,0 +1,17 @@
+html, body, .columns {
+  height: 100%;
+  margin: 0;
+}
+
+span.editor-tile {
+  display: inline-block; 
+  width: 64px; 
+  height: 64px;
+  background-repeat: no-repeat;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+span.editor-tile.selected {
+  border: 3px solid black;
+}

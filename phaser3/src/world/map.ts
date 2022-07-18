@@ -1,4 +1,4 @@
-import Ground, { GroundLayer, GroundType } from "./ground";
+import Tile, { GroundType } from "./tile";
 import Movable from "./movable";
 
 export interface MapJson {
@@ -7,36 +7,36 @@ export interface MapJson {
 }
 
 export default class Map {
-  protected ground: Ground[][];
+  protected tiles: Tile[][];
   protected movables: Set<Movable>[][];
 
   constructor(protected scene: Phaser.Scene, public width: number, public height: number) {}
 
   initialize(defaultGround: GroundType, defaultBackground: GroundType) {
-    this.ground = [];
+    this.tiles = [];
     this.movables = [];
     for (let y = 0; y < this.height; y++) {
-      this.ground[y] = [];
+      this.tiles[y] = [];
       this.movables[y] = [];
       for (let x = 0; x < this.width; x++) {
-        const ground = new Ground(this.scene, x, y).setGround(defaultGround).setBackground(defaultBackground);
-        this.ground[y][x] = ground;
+        const ground = new Tile(this.scene, x, y).setGround(defaultGround).setBackground(defaultBackground);
+        this.tiles[y][x] = ground;
         this.movables[y][x] = new Set<Movable>();
       }
     }
   }
 
-  setGround(x: number, y: number, ground: GroundType, layer: GroundLayer) {
+  setTile(x: number, y: number, ground: GroundType, background: GroundType) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
-    if (layer == "ground") this.ground[y][x].setGround(ground);
-    if (layer == "background") this.ground[y][x].setBackground(ground);
+    this.tiles[y][x].setGround(ground);
+    this.tiles[y][x].setBackground(background);
   }
 
-  getGround(x: number, y: number): Ground | undefined {
+  getTile(x: number, y: number): Tile | undefined {
     if (x >= this.width || x < 0) return undefined;
     if (y >= this.height || y < 0) return undefined;
-    return this.ground[y][x];
+    return this.tiles[y][x];
   }
 
   addMovable(x: number, y: number, movable: Movable) {
@@ -76,16 +76,15 @@ export default class Map {
 
   saveToJson(): MapJson {
     return {
-      background: this.ground.map((value) => value.map((value) => value.background)),
-      ground: this.ground.map((value) => value.map((value) => value.ground)),
+      background: this.tiles.map((value) => value.map((value) => value.background)),
+      ground: this.tiles.map((value) => value.map((value) => value.ground)),
     };
   }
 
   loadFromJson(json: MapJson) {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        this.setGround(x, y, json.background[y][x], "background");
-        this.setGround(x, y, json.ground[y][x], "ground");
+        this.setTile(x, y, json.ground[y][x], json.background[y][x]);
       }
     }
   }

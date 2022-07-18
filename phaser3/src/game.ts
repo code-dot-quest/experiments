@@ -2,7 +2,7 @@ import "phaser";
 import { saveAs } from "file-saver";
 import MapEditor from "./editor/map";
 import Map, { MapJson } from "./world/map";
-import Ground from "./world/ground";
+import Tile from "./world/tile";
 import Movable from "./world/movable";
 import commonSpec from "./world/common.json";
 import { initializeEditor } from "./editor/common";
@@ -21,7 +21,7 @@ interface LevelJson {
 export default class Demo extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   player: Movable;
-  stamp: Ground;
+  stamp: Tile;
   map: Map;
 
   constructor() {
@@ -40,7 +40,7 @@ export default class Demo extends Phaser.Scene {
     this.map = new Map(this, CANVAS_SIZE / commonSpec.tileSize, CANVAS_SIZE / commonSpec.tileSize);
     this.map.initialize(mapEditor.getDefaultGround(), mapEditor.getDefaultBackground());
 
-    this.stamp = new Ground(this, 0, 0).setGround(mapEditor.selectedTile);
+    this.stamp = new Tile(this, 0, 0).setGround(mapEditor.selectedGround).setBackground(mapEditor.selectedBackground);
     this.stamp.groundSprite.setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
@@ -49,8 +49,8 @@ export default class Demo extends Phaser.Scene {
     this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 }).setOrigin(0.5, 0.7).setDepth(200);
 
-    mapEditor.onTileSelected((ground) => {
-      this.stamp.setGround(ground);
+    mapEditor.onTileSelected((ground, background) => {
+      this.stamp.setGround(ground).setBackground(background);
     });
     mapEditor.onSave(() => {
       const levelJson = { map: this.map.saveToJson() };
@@ -70,7 +70,7 @@ export default class Demo extends Phaser.Scene {
     this.stamp.groundSprite.setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
     this.stamp.groundSprite.setVisible(time - this.input.activePointer.time < 2000);
     if (this.input.manager.activePointer.isDown) {
-      this.map.setGround(pointerX, pointerY, mapEditor.selectedTile, mapEditor.currentLayer);
+      this.map.setTile(pointerX, pointerY, mapEditor.selectedGround, mapEditor.selectedBackground);
     }
 
     if (this.cursors.left.isDown) {

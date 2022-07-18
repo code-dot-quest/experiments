@@ -1,4 +1,4 @@
-import groundSpec from "./ground.json";
+import tileSpec from "./tile.json";
 import commonSpec from "./common.json";
 
 export interface GroundType {
@@ -6,14 +6,12 @@ export interface GroundType {
   type: string;
 }
 
-export type GroundLayer = "background" | "ground";
-
 export interface GroundSpec {
   passable: { up?: boolean; down?: boolean; left?: boolean; right?: boolean; radius?: number };
   sprite: { resource: string; frame: string };
 }
 
-export default class Ground {
+export default class Tile {
   // ground layer
   public ground: GroundType;
   public groundSpec: GroundSpec;
@@ -29,9 +27,9 @@ export default class Ground {
     return { x: this.x, y: this.y };
   }
 
-  setGround(ground: GroundType): Ground {
+  setGround(ground: GroundType): Tile {
     this.ground = ground;
-    this.groundSpec = groundSpec[ground.kind].types[ground.type];
+    this.groundSpec = tileSpec[ground.kind].types[ground.type];
     const frame = this.groundSpec.sprite.frame;
     const resource = this.groundSpec.sprite.resource;
     if (!this.groundSprite) {
@@ -44,9 +42,9 @@ export default class Ground {
     return this;
   }
 
-  setBackground(background: GroundType): Ground {
+  setBackground(background: GroundType): Tile {
     this.background = background;
-    this.backgroundSpec = groundSpec[background.kind].types[background.type];
+    this.backgroundSpec = tileSpec[background.kind].types[background.type];
     const frame = this.backgroundSpec.sprite.frame;
     const resource = this.backgroundSpec.sprite.resource;
     if (!this.backgroundSprite) {

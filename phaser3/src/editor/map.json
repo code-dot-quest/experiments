@@ -1,5 +1,5 @@
 {
-  "groundSpriteSheet": {
+  "tileSpriteSheet": {
     "src": "assets/tiles.png",
     "w": 473,
     "h": 402
@@ -19,9 +19,9 @@
       "frame": { "x": 403, "y": 1, "w": 66, "h": 66 }
     },
     {
-      "kind": "grass",
+      "kind": "sand",
       "type": "middle",
-      "frame": { "x": 135, "y": 68, "w": 66, "h": 66 }
+      "frame": { "x": 1, "y": 269, "w": 66, "h": 66 }
     },
     {
       "kind": "rock",
@@ -29,9 +29,9 @@
       "frame": { "x": 336, "y": 68, "w": 66, "h": 66 }
     },
     {
-      "kind": "sand",
+      "kind": "grass",
       "type": "middle",
-      "frame": { "x": 1, "y": 269, "w": 66, "h": 66 }
+      "frame": { "x": 135, "y": 68, "w": 66, "h": 66 }
     }
   ],
   "ground": [

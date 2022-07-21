@@ -2,65 +2,30 @@ import $ from "cash-dom";
 import mapEditorSpec from "./map.json";
 import { GroundType } from "../world/tile";
 
-type OnTileSelected = (ground: GroundType, background: GroundType) => void;
+type OnTileSelected = (ground: GroundType) => void;
 type OnSave = () => void;
 type OnLoad = (json: any) => void;
 
 export default class MapEditor {
   public selectedGround: GroundType;
-  public selectedBackground: GroundType;
   protected onTileSelectedHandler: OnTileSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
 
   constructor() {
     this.selectedGround = this.getDefaultGround();
-    this.selectedBackground = this.getDefaultBackground();
     const instance = this;
     $(() => {
-      for (const background of mapEditorSpec.background) {
-        $(
-          `<style type="text/css"> .background-${background.kind} {` +
-            ` background:url(${mapEditorSpec.tileSpriteSheet.src});` +
-            ` background-position:-${Math.ceil(background.frame.x / 2)}px -${Math.ceil(background.frame.y / 2)}px;` +
-            ` background-size:${mapEditorSpec.tileSpriteSheet.w / 2}px ${mapEditorSpec.tileSpriteSheet.h / 2}px;` +
-            `} </style>`
-        ).appendTo("head");
-      }
-
-      for (const background of mapEditorSpec.background) {
-        $(
-          `<span class="editor-tile-background ${isSelected(background, this.selectedBackground)}"` +
-            ` x-kind="${background.kind}" x-type="${background.type}" style="` +
-            ` background:url(${mapEditorSpec.tileSpriteSheet.src});` +
-            ` background-position:-${Math.ceil(background.frame.x / 2)}px -${Math.ceil(background.frame.y / 2)}px;` +
-            ` background-size:${mapEditorSpec.tileSpriteSheet.w / 2}px ${mapEditorSpec.tileSpriteSheet.h / 2}px;` +
-            `" />`
-        ).appendTo("#editor-map-background");
-      }
-
       for (const ground of mapEditorSpec.ground) {
         $(
-          `<span class="editor-tile-ground-background background-${this.selectedBackground.kind}">` +
-            `<span class="editor-tile-ground ${isSelected(ground, this.selectedGround)}"` +
+          `<span class="editor-tile-ground ${isSelected(ground, this.selectedGround)}"` +
             ` x-kind="${ground.kind}" x-type="${ground.type}" style="` +
             ` background:url(${mapEditorSpec.tileSpriteSheet.src});` +
-            ` background-position:-${Math.ceil(ground.frame.x / 2)}px -${Math.ceil(ground.frame.y / 2)}px;` +
+            ` background-position:-${0.5 + ground.frame.x / 2}px -${0.5 + ground.frame.y / 2}px;` +
             ` background-size:${mapEditorSpec.tileSpriteSheet.w / 2}px ${mapEditorSpec.tileSpriteSheet.h / 2}px;` +
-            `" />` +
-            `</span>`
+            `" />`
         ).appendTo("#editor-map-ground");
       }
-
-      $("span.editor-tile-background").on("click", (event) => {
-        $("span.editor-tile-background.selected").removeClass("selected");
-        const $el = $(event.currentTarget).addClass("selected");
-        const kind = $el.attr("x-kind");
-        const type = $el.attr("x-type");
-        $("span.editor-tile-ground-background").removeClass().addClass(`editor-tile-ground-background background-${kind}`);
-        instance.selectedBackground = { kind, type };
-        if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedGround, instance.selectedBackground);
-      });
 
       $("span.editor-tile-ground").on("click", (event) => {
         $("span.editor-tile-ground.selected").removeClass("selected");
@@ -68,7 +33,7 @@ export default class MapEditor {
         const kind = $el.attr("x-kind");
         const type = $el.attr("x-type");
         instance.selectedGround = { kind, type };
-        if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedGround, instance.selectedBackground);
+        if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedGround);
       });
 
       $("#editor-save").on("click", () => {

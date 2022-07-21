@@ -2,8 +2,7 @@ import Tile, { GroundType } from "./tile";
 import Movable from "./movable";
 
 export interface MapJson {
-  background: GroundType[][];
-  ground: GroundType[][];
+  ground: GroundType[][][];
 }
 
 export default class Map {
@@ -12,25 +11,30 @@ export default class Map {
 
   constructor(protected scene: Phaser.Scene, public width: number, public height: number) {}
 
-  initialize(defaultGround: GroundType, defaultBackground: GroundType) {
+  initialize(defaultBackground: GroundType) {
     this.tiles = [];
     this.movables = [];
     for (let y = 0; y < this.height; y++) {
       this.tiles[y] = [];
       this.movables[y] = [];
       for (let x = 0; x < this.width; x++) {
-        const ground = new Tile(this.scene, x, y).setGround(defaultGround).setBackground(defaultBackground);
+        const ground = new Tile(this.scene, x, y).setGround(defaultBackground, 0);
         this.tiles[y][x] = ground;
         this.movables[y][x] = new Set<Movable>();
       }
     }
   }
 
-  setTile(x: number, y: number, ground: GroundType, background: GroundType) {
+  setTile(x: number, y: number, ground: GroundType, elevation: number) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
-    this.tiles[y][x].setGround(ground);
-    this.tiles[y][x].setBackground(background);
+    this.tiles[y][x].setGround(ground, elevation);
+  }
+
+  deleteTile(x: number, y: number, elevation: number) {
+    if (x >= this.width || x < 0) return;
+    if (y >= this.height || y < 0) return;
+    this.tiles[y][x].deleteGround(elevation);
   }
 
   getTile(x: number, y: number): Tile | undefined {
@@ -76,7 +80,6 @@ export default class Map {
 
   saveToJson(): MapJson {
     return {
-      background: this.tiles.map((value) => value.map((value) => value.background)),
       ground: this.tiles.map((value) => value.map((value) => value.ground)),
     };
   }
@@ -84,7 +87,9 @@ export default class Map {
   loadFromJson(json: MapJson) {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        this.setTile(x, y, json.ground[y][x], json.background[y][x]);
+        for (let elevation = 0; elevation < json.ground[y][x].length; elevation++) {
+          this.setTile(x, y, json.ground[y][x][elevation], elevation);
+        }
       }
     }
   }

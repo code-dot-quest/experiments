@@ -1,0 +1,17 @@
+html, body, .columns {
+  height: 100%;
+  margin: 0;
+}
+
+span.editor-tile-ground, span.editor-tile-background, span.editor-tile-ground-background {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+span.editor-tile-ground.selected, span.editor-tile-background.selected {
+  outline: 3px solid black;
+}

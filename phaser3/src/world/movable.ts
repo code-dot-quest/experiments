@@ -36,7 +36,7 @@ export default class Movable {
     this.y = y;
     this.posInTile = this.map.getMoveableFreePosInTile(x, y);
     this.map.addMovable(x, y, this);
-    const passableRadius = this.map.getTile(x, y).groundSpec.passable.radius ?? commonSpec.passableRadius;
+    const passableRadius = this.map.getTile(x, y).topGroundSpec.passable.radius ?? commonSpec.passableRadius;
     const pixelX = x * commonSpec.tileSize + commonSpec.tileSize / 2 + passableRadius * Math.sin(this.posInTile * Math.PI);
     const pixelY = y * commonSpec.tileSize + commonSpec.tileSize / 2 + passableRadius * Math.cos(this.posInTile * Math.PI);
     return { pixelX, pixelY };
@@ -58,11 +58,11 @@ export default class Movable {
     if (this.moving) return undefined;
     const currentGround = this.map.getTile(this.x, this.y);
     if (currentGround === undefined) return undefined;
-    if (!currentGround.groundSpec.passable[direction]) return undefined;
+    if (!currentGround.topGroundSpec.passable[direction]) return undefined;
     const { x, y } = positionAfterDirection(this.x, this.y, direction);
     const nextGround = this.map.getTile(x, y);
     if (nextGround === undefined) return undefined;
-    if (!nextGround.groundSpec.passable[flipDirection(direction)]) return undefined;
+    if (!nextGround.topGroundSpec.passable[flipDirection(direction)]) return undefined;
     return nextGround;
   }
 

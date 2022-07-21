@@ -3,7 +3,7 @@ html, body, .columns {
   margin: 0;
 }
 
-span.editor-tile-ground, span.editor-tile-background, span.editor-tile-ground-background {
+span.editor-tile-ground {
   display: inline-block;
   width: 32px;
   height: 32px;
@@ -12,6 +12,6 @@ span.editor-tile-ground, span.editor-tile-background, span.editor-tile-ground-ba
   cursor: pointer;
 }
 
-span.editor-tile-ground.selected, span.editor-tile-background.selected {
+span.editor-tile-ground.selected {
   outline: 3px solid black;
 }

@@ -29,6 +29,7 @@ export default class Demo extends Phaser.Scene {
   }
 
   preload() {
+    this.load.aseprite("ground", "assets/ground.png", "assets/ground.json");
     this.load.aseprite("tiles", "assets/tiles.png", "assets/tiles.json");
     this.load.aseprite("knight", "assets/knight.png", "assets/knight.json");
   }
@@ -38,10 +39,12 @@ export default class Demo extends Phaser.Scene {
     this.anims.createFromAseprite("knight");
 
     this.map = new Map(this, CANVAS_SIZE / commonSpec.tileSize, CANVAS_SIZE / commonSpec.tileSize);
-    this.map.initialize(mapEditor.getDefaultGround(), mapEditor.getDefaultBackground());
+    this.map.initialize(mapEditor.getDefaultBackground());
 
-    this.stamp = new Tile(this, 0, 0).setGround(mapEditor.selectedGround).setBackground(mapEditor.selectedBackground);
-    this.stamp.groundSprite.setAlpha(0.8);
+    this.stamp = new Tile(this, 0, 0).setGround(mapEditor.getDefaultBackground(), 0);
+    this.stamp.setGround(mapEditor.selectedGround, 1);
+    this.stamp.groundSprite[0].setDepth(0).setAlpha(0.8);
+    this.stamp.groundSprite[1].setDepth(1).setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
     this.add.grid(0, 0, CANVAS_SIZE, CANVAS_SIZE, commonSpec.tileSize, commonSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0xffffff, 0.2);
@@ -49,8 +52,9 @@ export default class Demo extends Phaser.Scene {
     this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 }).setOrigin(0.5, 0.7).setDepth(200);
 
-    mapEditor.onTileSelected((ground, background) => {
-      this.stamp.setGround(ground).setBackground(background);
+    mapEditor.onTileSelected((ground) => {
+      if (ground.kind == "water") this.stamp.deleteGround(1).groundSprite[0].setDepth(0).setAlpha(0.8);
+      else this.stamp.setGround(ground, 1).groundSprite[1].setDepth(1).setAlpha(0.8);
     });
     mapEditor.onSave(() => {
       const levelJson = { map: this.map.saveToJson() };
@@ -67,10 +71,15 @@ export default class Demo extends Phaser.Scene {
     const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
     const pointerX = Math.floor(worldPoint.x / commonSpec.tileSize);
     const pointerY = Math.floor(worldPoint.y / commonSpec.tileSize);
-    this.stamp.groundSprite.setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
-    this.stamp.groundSprite.setVisible(time - this.input.activePointer.time < 2000);
+    this.stamp.groundSprite[0].setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
+    this.stamp.groundSprite[0].setVisible(time - this.input.activePointer.time < 2000);
+    if (this.stamp.groundSprite.length == 2) {
+      this.stamp.groundSprite[1].setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
+      this.stamp.groundSprite[1].setVisible(time - this.input.activePointer.time < 2000);
+    }
     if (this.input.manager.activePointer.isDown) {
-      this.map.setTile(pointerX, pointerY, mapEditor.selectedGround, mapEditor.selectedBackground);
+      if (mapEditor.selectedGround.kind == "water") this.map.deleteTile(pointerX, pointerY, 1);
+      else this.map.setTile(pointerX, pointerY, mapEditor.selectedGround, 1);
     }
 
     if (this.cursors.left.isDown) {

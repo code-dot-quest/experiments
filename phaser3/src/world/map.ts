@@ -28,6 +28,7 @@ export default class Map {
   setTile(x: number, y: number, ground: GroundType, elevation: number) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
+    if (this.getTile(x, y)?.ground?.[elevation]?.kind == ground.kind) return;
     if (elevation == 1) {
       this.getTile(x, y - 1)?.removeEdge("down", elevation);
       this.getTile(x, y + 1)?.removeEdge("up", elevation);
@@ -46,6 +47,7 @@ export default class Map {
   deleteTile(x: number, y: number, elevation: number) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
+    if (!this.getTile(x, y)?.ground?.[elevation]) return;
     if (elevation == 1) {
       this.getTile(x, y - 1)?.addEdge("down", elevation);
       this.getTile(x, y + 1)?.addEdge("up", elevation);

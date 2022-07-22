@@ -43,7 +43,7 @@ export default class Demo extends Phaser.Scene {
 
     this.stamp = new Tile(this, 0, 0).setGround(mapEditor.getDefaultBackground(), 0);
     this.stamp.setGround(mapEditor.selectedGround, 1);
-    this.stamp.groundSprite[0].setDepth(0).setAlpha(0.8);
+    this.stamp.groundSprite[0].setDepth(0).setAlpha(0);
     this.stamp.groundSprite[1].setDepth(1).setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
@@ -54,7 +54,10 @@ export default class Demo extends Phaser.Scene {
 
     mapEditor.onTileSelected((ground) => {
       if (ground.kind == "water") this.stamp.deleteGround(1).groundSprite[0].setDepth(0).setAlpha(0.8);
-      else this.stamp.setGround(ground, 1).groundSprite[1].setDepth(1).setAlpha(0.8);
+      else {
+        this.stamp.setGround(ground, 1).groundSprite[1].setDepth(1).setAlpha(0.8);
+        this.stamp.groundSprite[0].setDepth(0).setAlpha(0);
+      }
     });
     mapEditor.onSave(() => {
       const levelJson = { map: this.map.saveToJson() };

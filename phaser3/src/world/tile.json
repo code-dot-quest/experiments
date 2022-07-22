@@ -9,19 +9,19 @@
   },
   "grass": {
     "types": {
-      "top-left": {
+      "up-left": {
         "passable": { "down": true, "right": true },
         "sprite": { "resource": "ground", "frame": "0" }
       },
-      "top": {
+      "up": {
         "passable": { "down": true, "left": true, "right": true },
         "sprite": { "resource": "ground", "frame": "1" }
       },
-      "top-right": {
+      "up-right": {
         "passable": { "down": true, "left": true },
         "sprite": { "resource": "ground", "frame": "2" }
       },
-      "top-left-right": {
+      "up-left-right": {
         "passable": { "down": true },
         "sprite": { "resource": "ground", "frame": "3" }
       },
@@ -41,35 +41,35 @@
         "passable": { "up": true, "down": true },
         "sprite": { "resource": "ground", "frame": "7" }
       },
-      "bottom-left": {
+      "down-left": {
         "passable": { "up": true, "right": true },
         "sprite": { "resource": "ground", "frame": "8" }
       },
-      "bottom": {
+      "down": {
         "passable": { "up": true, "left": true, "right": true },
         "sprite": { "resource": "ground", "frame": "9" }
       },
-      "bottom-right": {
+      "down-right": {
         "passable": { "up": true, "left": true },
         "sprite": { "resource": "ground", "frame": "10" }
       },
-      "bottom-left-right": {
+      "down-left-right": {
         "passable": { "up": true },
         "sprite": { "resource": "ground", "frame": "11" }
       },
-      "top-bottom-left": {
+      "up-down-left": {
         "passable": { "right": true },
         "sprite": { "resource": "ground", "frame": "12" }
       },
-      "top-bottom": {
+      "up-down": {
         "passable": { "left": true, "right": true },
         "sprite": { "resource": "ground", "frame": "13" }
       },
-      "top-bottom-right": {
+      "up-down-right": {
         "passable": { "left": true },
         "sprite": { "resource": "ground", "frame": "14" }
       },
-      "top-bottom-left-right": {
+      "up-down-left-right": {
         "passable": {},
         "sprite": { "resource": "ground", "frame": "15" }
       }

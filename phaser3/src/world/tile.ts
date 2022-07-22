@@ -1,5 +1,6 @@
 import tileSpec from "./tile.json";
 import commonSpec from "./common.json";
+import { Direction } from "./common";
 
 export interface GroundType {
   kind: string;
@@ -34,6 +35,7 @@ export default class Tile {
       this.groundSpec[elevation] = tileSpec[ground.kind].types[ground.type];
       const frame = this.groundSpec[elevation].sprite.frame;
       this.groundSprite[elevation].setFrame(frame);
+      this.topGroundSpec = this.groundSpec[elevation];
     } else if (this.ground.length == elevation) {
       // add
       this.ground[elevation] = ground;
@@ -57,4 +59,36 @@ export default class Tile {
     }
     return this;
   }
+
+  addEdge(edge: Direction, elevation: number): Tile | undefined {
+    const ground = this.ground[elevation];
+    if (!ground) return;
+    if (ground.type.includes(edge)) return;
+    return this.setGround(addEdgeToGround(edge, ground), elevation);
+  }
+
+  removeEdge(edge: Direction, elevation: number): Tile | undefined {
+    const ground = this.ground[elevation];
+    if (!ground) return;
+    if (!ground.type.includes(edge)) return;
+    return this.setGround(removeEdgeFromGround(edge, ground), elevation);
+  }
+}
+
+function addEdgeToGround(edge: Direction, ground: GroundType): GroundType {
+  const sides = [];
+  if (ground.type.includes("up") || edge == "up") sides.push("up");
+  if (ground.type.includes("down") || edge == "down") sides.push("down");
+  if (ground.type.includes("left") || edge == "left") sides.push("left");
+  if (ground.type.includes("right") || edge == "right") sides.push("right");
+  return { kind: ground.kind, type: sides.join("-") || "middle" };
+}
+
+function removeEdgeFromGround(edge: Direction, ground: GroundType): GroundType {
+  const sides = [];
+  if (ground.type.includes("up") && edge != "up") sides.push("up");
+  if (ground.type.includes("down") && edge != "down") sides.push("down");
+  if (ground.type.includes("left") && edge != "left") sides.push("left");
+  if (ground.type.includes("right") && edge != "right") sides.push("right");
+  return { kind: ground.kind, type: sides.join("-") || "middle" };
 }

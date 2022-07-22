@@ -28,12 +28,30 @@ export default class Map {
   setTile(x: number, y: number, ground: GroundType, elevation: number) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
+    if (elevation == 1) {
+      this.getTile(x, y - 1)?.removeEdge("down", elevation);
+      this.getTile(x, y + 1)?.removeEdge("up", elevation);
+      this.getTile(x - 1, y)?.removeEdge("right", elevation);
+      this.getTile(x + 1, y)?.removeEdge("left", elevation);
+      const sides = [];
+      if (!this.getTile(x, y - 1)?.ground?.[elevation]) sides.push("up");
+      if (!this.getTile(x, y + 1)?.ground?.[elevation]) sides.push("down");
+      if (!this.getTile(x - 1, y)?.ground?.[elevation]) sides.push("left");
+      if (!this.getTile(x + 1, y)?.ground?.[elevation]) sides.push("right");
+      ground = { kind: ground.kind, type: sides.join("-") || "middle" };
+    }
     this.tiles[y][x].setGround(ground, elevation);
   }
 
   deleteTile(x: number, y: number, elevation: number) {
     if (x >= this.width || x < 0) return;
     if (y >= this.height || y < 0) return;
+    if (elevation == 1) {
+      this.getTile(x, y - 1)?.addEdge("down", elevation);
+      this.getTile(x, y + 1)?.addEdge("up", elevation);
+      this.getTile(x - 1, y)?.addEdge("right", elevation);
+      this.getTile(x + 1, y)?.addEdge("left", elevation);
+    }
     this.tiles[y][x].deleteGround(elevation);
   }
 

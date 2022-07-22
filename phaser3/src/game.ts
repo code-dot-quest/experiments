@@ -22,7 +22,9 @@ export default class Demo extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   player: Movable;
   stamp: Tile;
+  lastTimeAction;
   map: Map;
+  grid: Phaser.GameObjects.Grid;
 
   constructor() {
     super("demo");
@@ -47,7 +49,7 @@ export default class Demo extends Phaser.Scene {
     this.stamp.groundSprite[1].setDepth(1).setAlpha(0.8);
 
     //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
-    this.add.grid(0, 0, CANVAS_SIZE, CANVAS_SIZE, commonSpec.tileSize, commonSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0xffffff, 0.2);
+    this.grid = this.add.grid(0, 0, CANVAS_SIZE, CANVAS_SIZE, commonSpec.tileSize, commonSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0xffffff, 0.2);
 
     this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 }).setOrigin(0.5, 0.7).setDepth(200);
@@ -67,6 +69,9 @@ export default class Demo extends Phaser.Scene {
     mapEditor.onLoad((json: any) => {
       const levelJson = json as LevelJson;
       this.map.loadFromJson(levelJson.map);
+    });
+    mapEditor.onGridToggled((enabled: boolean) => {
+      this.grid.visible = enabled;
     });
   }
 

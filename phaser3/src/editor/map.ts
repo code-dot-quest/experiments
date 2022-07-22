@@ -5,12 +5,14 @@ import { GroundType } from "../world/tile";
 type OnTileSelected = (ground: GroundType) => void;
 type OnSave = () => void;
 type OnLoad = (json: any) => void;
+type OnGridToggled = (enabled: boolean) => void;
 
 export default class MapEditor {
   public selectedGround: GroundType;
   protected onTileSelectedHandler: OnTileSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
+  protected onGridToggledHandler: OnGridToggled;
 
   constructor() {
     this.selectedGround = this.getDefaultGround();
@@ -34,6 +36,11 @@ export default class MapEditor {
         const type = $el.attr("x-type");
         instance.selectedGround = { kind, type };
         if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedGround);
+      });
+
+      $("#editor-grid-toggle").on("change", (event) => {
+        const $el = $(event.currentTarget);
+        if (this.onGridToggledHandler) this.onGridToggledHandler($el.is(":checked"));
       });
 
       $("#editor-save").on("click", () => {
@@ -69,6 +76,10 @@ export default class MapEditor {
 
   onLoad(handler: OnLoad) {
     this.onLoadHandler = handler;
+  }
+
+  onGridToggled(handler: OnGridToggled) {
+    this.onGridToggledHandler = handler;
   }
 
   getDefaultGround(): GroundType {

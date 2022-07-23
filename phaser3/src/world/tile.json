@@ -1,4 +1,12 @@
 {
+  "erase": {
+    "types": {
+      "middle": {
+        "passable": {},
+        "sprite": { "resource": "tiles", "frame": "7" }
+      }
+    }
+  },
   "water": {
     "types": {
       "middle": {
@@ -11,67 +19,203 @@
     "types": {
       "up-left": {
         "passable": { "down": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "0" }
+        "sprite": { "resource": "grass", "frame": "0" }
       },
       "up": {
         "passable": { "down": true, "left": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "1" }
+        "sprite": { "resource": "grass", "frame": "1" }
       },
       "up-right": {
         "passable": { "down": true, "left": true },
-        "sprite": { "resource": "ground", "frame": "2" }
+        "sprite": { "resource": "grass", "frame": "2" }
       },
       "up-left-right": {
         "passable": { "down": true },
-        "sprite": { "resource": "ground", "frame": "3" }
+        "sprite": { "resource": "grass", "frame": "3" }
       },
       "left": {
         "passable": { "up": true, "down": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "4" }
+        "sprite": { "resource": "grass", "frame": "4" }
       },
       "middle": {
         "passable": { "up": true, "down": true, "left": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "5" }
+        "sprite": { "resource": "grass", "frame": "5" }
       },
       "right": {
         "passable": { "up": true, "down": true, "left": true },
-        "sprite": { "resource": "ground", "frame": "6" }
+        "sprite": { "resource": "grass", "frame": "6" }
       },
       "left-right": {
         "passable": { "up": true, "down": true },
-        "sprite": { "resource": "ground", "frame": "7" }
+        "sprite": { "resource": "grass", "frame": "7" }
       },
       "down-left": {
         "passable": { "up": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "8" }
+        "sprite": { "resource": "grass", "frame": "8" }
       },
       "down": {
         "passable": { "up": true, "left": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "9" }
+        "sprite": { "resource": "grass", "frame": "9" }
       },
       "down-right": {
         "passable": { "up": true, "left": true },
-        "sprite": { "resource": "ground", "frame": "10" }
+        "sprite": { "resource": "grass", "frame": "10" }
       },
       "down-left-right": {
         "passable": { "up": true },
-        "sprite": { "resource": "ground", "frame": "11" }
+        "sprite": { "resource": "grass", "frame": "11" }
       },
       "up-down-left": {
         "passable": { "right": true },
-        "sprite": { "resource": "ground", "frame": "12" }
+        "sprite": { "resource": "grass", "frame": "12" }
       },
       "up-down": {
         "passable": { "left": true, "right": true },
-        "sprite": { "resource": "ground", "frame": "13" }
+        "sprite": { "resource": "grass", "frame": "13" }
       },
       "up-down-right": {
         "passable": { "left": true },
-        "sprite": { "resource": "ground", "frame": "14" }
+        "sprite": { "resource": "grass", "frame": "14" }
       },
       "up-down-left-right": {
         "passable": {},
-        "sprite": { "resource": "ground", "frame": "15" }
+        "sprite": { "resource": "grass", "frame": "15" }
+      }
+    }
+  },
+  "sand": {
+    "types": {
+      "up-left": {
+        "passable": { "down": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "0" }
+      },
+      "up": {
+        "passable": { "down": true, "left": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "1" }
+      },
+      "up-right": {
+        "passable": { "down": true, "left": true },
+        "sprite": { "resource": "sand", "frame": "2" }
+      },
+      "up-left-right": {
+        "passable": { "down": true },
+        "sprite": { "resource": "sand", "frame": "3" }
+      },
+      "left": {
+        "passable": { "up": true, "down": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "4" }
+      },
+      "middle": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "5" }
+      },
+      "right": {
+        "passable": { "up": true, "down": true, "left": true },
+        "sprite": { "resource": "sand", "frame": "6" }
+      },
+      "left-right": {
+        "passable": { "up": true, "down": true },
+        "sprite": { "resource": "sand", "frame": "7" }
+      },
+      "down-left": {
+        "passable": { "up": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "8" }
+      },
+      "down": {
+        "passable": { "up": true, "left": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "9" }
+      },
+      "down-right": {
+        "passable": { "up": true, "left": true },
+        "sprite": { "resource": "sand", "frame": "10" }
+      },
+      "down-left-right": {
+        "passable": { "up": true },
+        "sprite": { "resource": "sand", "frame": "11" }
+      },
+      "up-down-left": {
+        "passable": { "right": true },
+        "sprite": { "resource": "sand", "frame": "12" }
+      },
+      "up-down": {
+        "passable": { "left": true, "right": true },
+        "sprite": { "resource": "sand", "frame": "13" }
+      },
+      "up-down-right": {
+        "passable": { "left": true },
+        "sprite": { "resource": "sand", "frame": "14" }
+      },
+      "up-down-left-right": {
+        "passable": {},
+        "sprite": { "resource": "sand", "frame": "15" }
+      }
+    }
+  },
+  "rock": {
+    "types": {
+      "up-left": {
+        "passable": { "down": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "0" }
+      },
+      "up": {
+        "passable": { "down": true, "left": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "1" }
+      },
+      "up-right": {
+        "passable": { "down": true, "left": true },
+        "sprite": { "resource": "rock", "frame": "2" }
+      },
+      "up-left-right": {
+        "passable": { "down": true },
+        "sprite": { "resource": "rock", "frame": "3" }
+      },
+      "left": {
+        "passable": { "up": true, "down": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "4" }
+      },
+      "middle": {
+        "passable": { "up": true, "down": true, "left": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "5" }
+      },
+      "right": {
+        "passable": { "up": true, "down": true, "left": true },
+        "sprite": { "resource": "rock", "frame": "6" }
+      },
+      "left-right": {
+        "passable": { "up": true, "down": true },
+        "sprite": { "resource": "rock", "frame": "7" }
+      },
+      "down-left": {
+        "passable": { "up": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "8" }
+      },
+      "down": {
+        "passable": { "up": true, "left": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "9" }
+      },
+      "down-right": {
+        "passable": { "up": true, "left": true },
+        "sprite": { "resource": "rock", "frame": "10" }
+      },
+      "down-left-right": {
+        "passable": { "up": true },
+        "sprite": { "resource": "rock", "frame": "11" }
+      },
+      "up-down-left": {
+        "passable": { "right": true },
+        "sprite": { "resource": "rock", "frame": "16" }
+      },
+      "up-down": {
+        "passable": { "left": true, "right": true },
+        "sprite": { "resource": "rock", "frame": "17" }
+      },
+      "up-down-right": {
+        "passable": { "left": true },
+        "sprite": { "resource": "rock", "frame": "18" }
+      },
+      "up-down-left-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "19" }
       }
     }
   }

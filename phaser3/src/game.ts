@@ -2,7 +2,7 @@ import "phaser";
 import { saveAs } from "file-saver";
 import MapEditor from "./editor/map";
 import Map, { MapJson } from "./world/map";
-import Tile from "./world/tile";
+import Tile, { GroundType } from "./world/tile";
 import Movable from "./world/movable";
 import commonSpec from "./world/common.json";
 import { initializeEditor } from "./editor/common";
@@ -18,12 +18,19 @@ interface LevelJson {
   map: MapJson;
 }
 
+interface TileExample {
+  x: number;
+  y: number;
+  tile: GroundType;
+  deleted: GroundType;
+}
+
 export default class Demo extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   player: Movable;
-  stamp: Tile;
   lastTimeAction;
   map: Map;
+  example: TileExample;
   grid: Phaser.GameObjects.Grid;
 
   constructor() {
@@ -31,7 +38,9 @@ export default class Demo extends Phaser.Scene {
   }
 
   preload() {
-    this.load.aseprite("ground", "assets/ground.png", "assets/ground.json");
+    this.load.aseprite("grass", "assets/grass.png", "assets/grass.json");
+    this.load.aseprite("sand", "assets/sand.png", "assets/sand.json");
+    this.load.aseprite("rock", "assets/rock.png", "assets/rock.json");
     this.load.aseprite("tiles", "assets/tiles.png", "assets/tiles.json");
     this.load.aseprite("knight", "assets/knight.png", "assets/knight.json");
   }
@@ -43,24 +52,13 @@ export default class Demo extends Phaser.Scene {
     this.map = new Map(this, CANVAS_SIZE / commonSpec.tileSize, CANVAS_SIZE / commonSpec.tileSize);
     this.map.initialize(mapEditor.getDefaultBackground());
 
-    this.stamp = new Tile(this, 0, 0).setGround(mapEditor.getDefaultBackground(), 0);
-    this.stamp.setGround(mapEditor.selectedGround, 1);
-    this.stamp.groundSprite[0].setDepth(0).setAlpha(0);
-    this.stamp.groundSprite[1].setDepth(1).setAlpha(0.8);
-
-    //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
     this.grid = this.add.grid(0, 0, CANVAS_SIZE, CANVAS_SIZE, commonSpec.tileSize, commonSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0xffffff, 0.2);
+    //this.add.grid(0, 0, 1280, 1280, configSpec.tileSize, configSpec.tileSize).setOrigin(0, 0).setOutlineStyle(0x101010, 0.15);
 
     this.player = new Movable(this, this.map).spawn({ kind: "knight", type: "blue" }, 4, 4);
     this.add.sprite(200, 200, "knight").play({ key: "Attack_1", repeat: -1 }).setOrigin(0.5, 0.7).setDepth(200);
 
-    mapEditor.onTileSelected((ground) => {
-      if (ground.kind == "water") this.stamp.deleteGround(1).groundSprite[0].setDepth(0).setAlpha(0.8);
-      else {
-        this.stamp.setGround(ground, 1).groundSprite[1].setDepth(1).setAlpha(0.8);
-        this.stamp.groundSprite[0].setDepth(0).setAlpha(0);
-      }
-    });
+    mapEditor.onTileSelected((ground) => {});
     mapEditor.onSave(() => {
       const levelJson = { map: this.map.saveToJson() };
       const blob = new Blob([JSON.stringify(levelJson)], { type: "text/plain;charset=utf-8" });
@@ -79,15 +77,28 @@ export default class Demo extends Phaser.Scene {
     const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
     const pointerX = Math.floor(worldPoint.x / commonSpec.tileSize);
     const pointerY = Math.floor(worldPoint.y / commonSpec.tileSize);
-    this.stamp.groundSprite[0].setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
-    this.stamp.groundSprite[0].setVisible(time - this.input.activePointer.time < 2000);
-    if (this.stamp.groundSprite.length == 2) {
-      this.stamp.groundSprite[1].setPosition(pointerX * commonSpec.tileSize, pointerY * commonSpec.tileSize);
-      this.stamp.groundSprite[1].setVisible(time - this.input.activePointer.time < 2000);
+
+    if (this.example?.x != pointerX || this.example?.y != pointerY || time - this.input.activePointer.time > 1000) {
+      if (this.example) {
+        // remove the example
+        if (this.example.tile.kind == "erase") this.map.setTile(this.example.x, this.example.y, this.example.deleted, 1);
+        else this.map.deleteTile(this.example.x, this.example.y, 1);
+        this.example = undefined;
+      }
+      if (time - this.input.activePointer.time < 1000) {
+        // create new example
+        const tile = this.map.getTile(pointerX, pointerY)?.ground?.[1];
+        let success = false;
+        if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY, 1);
+        else success = this.map.setTile(pointerX, pointerY, mapEditor.selectedTile, 1);
+        if (success) {
+          this.example = { x: pointerX, y: pointerY, tile: mapEditor.selectedTile, deleted: tile };
+        }
+      }
     }
+
     if (this.input.manager.activePointer.isDown) {
-      if (mapEditor.selectedGround.kind == "water") this.map.deleteTile(pointerX, pointerY, 1);
-      else this.map.setTile(pointerX, pointerY, mapEditor.selectedGround, 1);
+      this.example = undefined;
     }
 
     if (this.cursors.left.isDown) {

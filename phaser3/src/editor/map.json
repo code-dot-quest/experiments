@@ -14,14 +14,19 @@
   },
   "ground": [
     {
-      "kind": "water",
+      "kind": "erase",
       "type": "middle",
-      "frame": { "x": 403, "y": 1, "w": 66, "h": 66 }
+      "frame": { "x": 1, "y": 68, "w": 66, "h": 66 }
     },
     {
       "kind": "grass",
       "type": "middle",
       "frame": { "x": 135, "y": 68, "w": 66, "h": 66 }
+    },
+    {
+      "kind": "sand",
+      "type": "middle",
+      "frame": { "x": 1, "y": 269, "w": 66, "h": 66 }
     }
   ]
 }

@@ -8,19 +8,19 @@ type OnLoad = (json: any) => void;
 type OnGridToggled = (enabled: boolean) => void;
 
 export default class MapEditor {
-  public selectedGround: GroundType;
+  public selectedTile: GroundType;
   protected onTileSelectedHandler: OnTileSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
   protected onGridToggledHandler: OnGridToggled;
 
   constructor() {
-    this.selectedGround = this.getDefaultGround();
+    this.selectedTile = this.getDefaultGround();
     const instance = this;
     $(() => {
       for (const ground of mapEditorSpec.ground) {
         $(
-          `<span class="editor-tile-ground ${isSelected(ground, this.selectedGround)}"` +
+          `<span class="editor-tile-ground ${isSelected(ground, this.selectedTile)}"` +
             ` x-kind="${ground.kind}" x-type="${ground.type}" style="` +
             ` background:url(${mapEditorSpec.tileSpriteSheet.src});` +
             ` background-position:-${0.5 + ground.frame.x / 2}px -${0.5 + ground.frame.y / 2}px;` +
@@ -34,8 +34,8 @@ export default class MapEditor {
         const $el = $(event.currentTarget).addClass("selected");
         const kind = $el.attr("x-kind");
         const type = $el.attr("x-type");
-        instance.selectedGround = { kind, type };
-        if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedGround);
+        instance.selectedTile = { kind, type };
+        if (this.onTileSelectedHandler) this.onTileSelectedHandler(instance.selectedTile);
       });
 
       $("#editor-grid-toggle").on("change", (event) => {

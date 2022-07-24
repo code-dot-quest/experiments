@@ -38,8 +38,19 @@ export default class Tile {
     return { x: this.x, y: this.y };
   }
 
-  getTopGround(): GroundType {
-    return this.zorder[this.zorder.length - 1]?.ground;
+  getGroundOnTop(): GroundType {
+    return this.getGround(this.zorder.length - 1);
+  }
+
+  getGround(zorder: number): GroundType {
+    return this.zorder[zorder]?.ground;
+  }
+
+  getTopZorderOfKind(groundKind: string): number {
+    for (let zorder = this.zorder.length - 1; zorder >= 0; zorder--) {
+      if (groundKind == this.zorder[zorder].ground.kind) return zorder;
+    }
+    return NaN;
   }
 
   getGroundArray(): GroundType[] {
@@ -51,7 +62,7 @@ export default class Tile {
   }
 
   addGroundOnTop(ground: GroundType): Tile {
-    if (this.getTopGround()?.kind == ground.kind) return this;
+    if (this.getGroundOnTop()?.kind == ground.kind) return this;
     const elevation = 1; // TODO: fix
     const groundSpec = tileSpec[ground.kind].types[ground.type];
     const frame = groundSpec.sprite.frame;
@@ -89,21 +100,23 @@ export default class Tile {
     return this;
   }
 
-  addEdgeOnTop(edge: Direction, groundKindFilter: string): boolean {
-    const topGround = this.getTopGround();
-    if (!topGround) return false;
-    if (topGround.kind != groundKindFilter) return false;
-    if (topGround.type.includes(edge)) return true;
-    this.replaceGroundOnTop(addEdgeToGround(edge, topGround));
+  addEdgeOnTopKind(edge: Direction, groundKind: string): boolean {
+    const zorder = this.getTopZorderOfKind(groundKind);
+    if (isNaN(zorder)) return false;
+    const ground = this.getGround(zorder);
+    if (!ground) return false;
+    if (ground.type.includes(edge)) return true;
+    this.replaceGround(addEdgeToGround(edge, ground), zorder);
     return true;
   }
 
-  removeEdgeOnTop(edge: Direction, groundKindFilter: string): boolean {
-    const topGround = this.getTopGround();
-    if (!topGround) return false;
-    if (topGround.kind != groundKindFilter) return false;
-    if (!topGround.type.includes(edge)) return true;
-    this.replaceGroundOnTop(removeEdgeFromGround(edge, topGround));
+  removeEdgeOnTopKind(edge: Direction, groundKind: string): boolean {
+    const zorder = this.getTopZorderOfKind(groundKind);
+    if (isNaN(zorder)) return false;
+    const ground = this.getGround(zorder);
+    if (!ground) return false;
+    if (!ground.type.includes(edge)) return true;
+    this.replaceGround(removeEdgeFromGround(edge, ground), zorder);
     return true;
   }
 

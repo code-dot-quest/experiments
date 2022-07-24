@@ -32,6 +32,9 @@ export default class Demo extends Phaser.Scene {
   map: Map;
   preview: TilePreview;
   grid: Phaser.GameObjects.Grid;
+  clickAlreadyHandled: boolean;
+  lastClickX: number;
+  lastClickY: number;
 
   constructor() {
     super("demo");
@@ -78,27 +81,37 @@ export default class Demo extends Phaser.Scene {
     const pointerX = Math.floor(worldPoint.x / commonSpec.tileSize);
     const pointerY = Math.floor(worldPoint.y / commonSpec.tileSize);
 
-    if (this.preview?.x != pointerX || this.preview?.y != pointerY || time - this.input.activePointer.time > 1000) {
-      if (this.preview) {
-        // remove the preview
-        if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted);
-        else this.map.deleteTile(this.preview.x, this.preview.y);
-        this.preview = undefined;
-      }
-      if (time - this.input.activePointer.time < 1000) {
-        // create new preview
-        const ground = this.map.getTile(pointerX, pointerY)?.getTopGround();
-        let success = false;
-        if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY);
-        else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile);
-        if (success) {
-          this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground };
+    if (!this.clickAlreadyHandled) {
+      // display preview
+      if (this.preview?.x != pointerX || this.preview?.y != pointerY || time - this.input.activePointer.time > 1000) {
+        if (this.preview) {
+          // remove the preview
+          if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted);
+          else this.map.deleteTile(this.preview.x, this.preview.y);
+          this.preview = undefined;
+        }
+        if (time - this.input.activePointer.time < 1000) {
+          // create new preview
+          const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTop();
+          let success = false;
+          if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY);
+          else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile);
+          if (success) {
+            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground };
+          }
         }
       }
     }
 
-    if (this.input.manager.activePointer.isDown) {
-      this.preview = undefined;
+    if (this.input.manager.activePointer.isDown && !this.clickAlreadyHandled) {
+      this.preview = undefined; // this will leave the preview in place
+      this.clickAlreadyHandled = true;
+      this.lastClickX = pointerX;
+      this.lastClickY = pointerY;
+    }
+
+    if (this.lastClickX != pointerX || this.lastClickY != pointerY || time - this.input.activePointer.time > 1000) {
+      this.clickAlreadyHandled = false;
     }
 
     if (this.cursors.left.isDown) {

@@ -28,11 +28,11 @@ export default class Map {
   addTile(x: number, y: number, ground: GroundType): boolean {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
-    if (this.getTile(x, y)?.getTopGround()?.kind == ground.kind) return false;
-    const upFound = this.getTile(x, y - 1)?.removeEdgeOnTop("down", ground.kind);
-    const downFound = this.getTile(x, y + 1)?.removeEdgeOnTop("up", ground.kind);
-    const leftFound = this.getTile(x - 1, y)?.removeEdgeOnTop("right", ground.kind);
-    const rightFound = this.getTile(x + 1, y)?.removeEdgeOnTop("left", ground.kind);
+    if (this.getTile(x, y)?.getGroundOnTop()?.kind == ground.kind) return false;
+    const upFound = this.getTile(x, y - 1)?.removeEdgeOnTopKind("down", ground.kind);
+    const downFound = this.getTile(x, y + 1)?.removeEdgeOnTopKind("up", ground.kind);
+    const leftFound = this.getTile(x - 1, y)?.removeEdgeOnTopKind("right", ground.kind);
+    const rightFound = this.getTile(x + 1, y)?.removeEdgeOnTopKind("left", ground.kind);
     const sides = [];
     if (!upFound) sides.push("up");
     if (!downFound) sides.push("down");
@@ -47,12 +47,12 @@ export default class Map {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
     if (this.getTile(x, y)?.getNumGrounds() <= 1) return false;
-    const topGround = this.getTile(x, y)?.getTopGround();
+    const topGround = this.getTile(x, y)?.getGroundOnTop();
     if (!topGround) return false;
-    this.getTile(x, y - 1)?.addEdgeOnTop("down", topGround.kind);
-    this.getTile(x, y + 1)?.addEdgeOnTop("up", topGround.kind);
-    this.getTile(x - 1, y)?.addEdgeOnTop("right", topGround.kind);
-    this.getTile(x + 1, y)?.addEdgeOnTop("left", topGround.kind);
+    this.getTile(x, y - 1)?.addEdgeOnTopKind("down", topGround.kind);
+    this.getTile(x, y + 1)?.addEdgeOnTopKind("up", topGround.kind);
+    this.getTile(x - 1, y)?.addEdgeOnTopKind("right", topGround.kind);
+    this.getTile(x + 1, y)?.addEdgeOnTopKind("left", topGround.kind);
     this.tiles[y][x].deleteGroundOnTop();
     return true;
   }

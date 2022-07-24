@@ -60,14 +60,18 @@ export default class Tile {
     return this;
   }
 
-  addEdge(edge: Direction, elevation: number): Tile | undefined {
+  getTopGroundType(elevation: number): GroundType {
+    return this.ground[elevation];
+  }
+
+  addEdge(edge: Direction, elevation: number): Tile {
     const ground = this.ground[elevation];
     if (!ground) return;
     if (ground.type.includes(edge)) return;
     return this.setGround(addEdgeToGround(edge, ground), elevation);
   }
 
-  removeEdge(edge: Direction, elevation: number): Tile | undefined {
+  removeEdge(edge: Direction, elevation: number): Tile {
     const ground = this.ground[elevation];
     if (!ground) return;
     if (!ground.type.includes(edge)) return;

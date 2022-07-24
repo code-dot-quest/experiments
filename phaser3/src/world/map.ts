@@ -28,7 +28,7 @@ export default class Map {
   setTile(x: number, y: number, ground: GroundType, elevation: number): boolean {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
-    if (this.getTile(x, y)?.ground?.[elevation]?.kind == ground.kind) return false;
+    if (this.getTopGroundType(x, y, elevation)?.kind == ground.kind) return false;
     if (elevation == 1) {
       this.getTile(x, y - 1)?.removeEdge("down", elevation);
       this.getTile(x, y + 1)?.removeEdge("up", elevation);
@@ -48,7 +48,7 @@ export default class Map {
   deleteTile(x: number, y: number, elevation: number): boolean {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
-    if (!this.getTile(x, y)?.ground?.[elevation]) return false;
+    if (!this.getTopGroundType(x, y, elevation)) return false;
     if (elevation == 1) {
       this.getTile(x, y - 1)?.addEdge("down", elevation);
       this.getTile(x, y + 1)?.addEdge("up", elevation);
@@ -59,10 +59,14 @@ export default class Map {
     return true;
   }
 
-  getTile(x: number, y: number): Tile | undefined {
+  getTile(x: number, y: number): Tile {
     if (x >= this.width || x < 0) return undefined;
     if (y >= this.height || y < 0) return undefined;
     return this.tiles[y][x];
+  }
+
+  getTopGroundType(x: number, y: number, elevation: number): GroundType {
+    return this.getTile(x, y)?.getTopGroundType(elevation);
   }
 
   addMovable(x: number, y: number, movable: Movable) {

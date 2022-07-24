@@ -2,7 +2,7 @@ import "phaser";
 import { saveAs } from "file-saver";
 import MapEditor from "./editor/map";
 import Map, { MapJson } from "./world/map";
-import Tile, { GroundType } from "./world/tile";
+import { GroundType } from "./world/tile";
 import Movable from "./world/movable";
 import commonSpec from "./world/common.json";
 import { initializeEditor } from "./editor/common";
@@ -18,10 +18,10 @@ interface LevelJson {
   map: MapJson;
 }
 
-interface TileExample {
+interface TilePreview {
   x: number;
   y: number;
-  tile: GroundType;
+  ground: GroundType;
   deleted: GroundType;
 }
 
@@ -30,7 +30,7 @@ export default class Demo extends Phaser.Scene {
   player: Movable;
   lastTimeAction;
   map: Map;
-  example: TileExample;
+  preview: TilePreview;
   grid: Phaser.GameObjects.Grid;
 
   constructor() {
@@ -78,27 +78,27 @@ export default class Demo extends Phaser.Scene {
     const pointerX = Math.floor(worldPoint.x / commonSpec.tileSize);
     const pointerY = Math.floor(worldPoint.y / commonSpec.tileSize);
 
-    if (this.example?.x != pointerX || this.example?.y != pointerY || time - this.input.activePointer.time > 1000) {
-      if (this.example) {
-        // remove the example
-        if (this.example.tile.kind == "erase") this.map.setTile(this.example.x, this.example.y, this.example.deleted, 1);
-        else this.map.deleteTile(this.example.x, this.example.y, 1);
-        this.example = undefined;
+    if (this.preview?.x != pointerX || this.preview?.y != pointerY || time - this.input.activePointer.time > 1000) {
+      if (this.preview) {
+        // remove the preview
+        if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted);
+        else this.map.deleteTile(this.preview.x, this.preview.y);
+        this.preview = undefined;
       }
       if (time - this.input.activePointer.time < 1000) {
-        // create new example
-        const tile = this.map.getTile(pointerX, pointerY)?.ground?.[1];
+        // create new preview
+        const ground = this.map.getTile(pointerX, pointerY)?.getTopGround();
         let success = false;
-        if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY, 1);
-        else success = this.map.setTile(pointerX, pointerY, mapEditor.selectedTile, 1);
+        if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY);
+        else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile);
         if (success) {
-          this.example = { x: pointerX, y: pointerY, tile: mapEditor.selectedTile, deleted: tile };
+          this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground };
         }
       }
     }
 
     if (this.input.manager.activePointer.isDown) {
-      this.example = undefined;
+      this.preview = undefined;
     }
 
     if (this.cursors.left.isDown) {

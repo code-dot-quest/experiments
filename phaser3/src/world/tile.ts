@@ -7,75 +7,118 @@ export interface GroundType {
   type: string;
 }
 
+export interface TilePassable {
+  up?: boolean;
+  down?: boolean;
+  left?: boolean;
+  right?: boolean;
+  radius?: number;
+}
+
 export interface TileSpec {
-  passable: { up?: boolean; down?: boolean; left?: boolean; right?: boolean; radius?: number };
+  passable: TilePassable;
   sprite: { resource: string; frame: string };
 }
 
+interface SingleTile {
+  elevation: number;
+  ground: GroundType;
+  groundSpec: TileSpec;
+  groundSprite: Phaser.GameObjects.Sprite;
+}
+
 export default class Tile {
-  public ground: GroundType[];
-  public groundSpec: TileSpec[];
-  public groundSprite: Phaser.GameObjects.Sprite[];
-  public topGroundSpec: TileSpec;
+  protected zorder: SingleTile[];
 
   constructor(protected scene: Phaser.Scene, protected x: number, protected y: number) {
-    this.ground = [];
-    this.groundSpec = [];
-    this.groundSprite = [];
+    this.zorder = [];
   }
 
   getPosition(): { x: number; y: number } {
     return { x: this.x, y: this.y };
   }
 
-  setGround(ground: GroundType, elevation: number): Tile {
-    if (this.ground.length >= elevation + 1) {
-      // set
-      this.ground[elevation] = ground;
-      this.groundSpec[elevation] = tileSpec[ground.kind].types[ground.type];
-      const frame = this.groundSpec[elevation].sprite.frame;
-      this.groundSprite[elevation].setFrame(frame);
-      this.topGroundSpec = this.groundSpec[elevation];
-    } else if (this.ground.length == elevation) {
-      // add
-      this.ground[elevation] = ground;
-      this.groundSpec[elevation] = tileSpec[ground.kind].types[ground.type];
-      const frame = this.groundSpec[elevation].sprite.frame;
-      const resource = this.groundSpec[elevation].sprite.resource;
-      this.groundSprite[elevation] = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
-      this.groundSprite[elevation].setOrigin(0, 0).setDepth(this.y - 10000 + elevation);
-      this.topGroundSpec = this.groundSpec[elevation];
-    }
+  getTopGround(): GroundType {
+    return this.zorder[this.zorder.length - 1]?.ground;
+  }
+
+  getGroundArray(): GroundType[] {
+    return this.zorder.map((singleTile) => singleTile.ground);
+  }
+
+  getNumGrounds(): number {
+    return this.zorder.length;
+  }
+
+  addGroundOnTop(ground: GroundType): Tile {
+    if (this.getTopGround()?.kind == ground.kind) return this;
+    const elevation = 1; // TODO: fix
+    const groundSpec = tileSpec[ground.kind].types[ground.type];
+    const frame = groundSpec.sprite.frame;
+    const resource = groundSpec.sprite.resource;
+    const groundSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
+    groundSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation);
+    this.zorder.push({
+      elevation,
+      ground,
+      groundSpec,
+      groundSprite,
+    });
     return this;
   }
 
-  deleteGround(elevation: number): Tile {
-    if (this.ground.length == elevation + 1 && elevation > 0) {
-      this.groundSprite[elevation].destroy();
-      this.ground.pop();
-      this.groundSpec.pop();
-      this.groundSprite.pop();
-      this.topGroundSpec = this.groundSpec[elevation - 1];
-    }
+  replaceGroundOnTop(ground: GroundType): Tile {
+    return this.replaceGround(ground, this.zorder.length - 1);
+  }
+
+  replaceGround(ground: GroundType, zorder: number): Tile {
+    if (zorder < 0 || zorder >= this.zorder.length) return this;
+    const groundSpec = tileSpec[ground.kind].types[ground.type];
+    const frame = groundSpec.sprite.frame;
+    const resource = groundSpec.sprite.resource; // TODO: handle different resource
+    this.zorder[zorder].ground = ground;
+    this.zorder[zorder].groundSpec = groundSpec;
+    this.zorder[zorder].groundSprite.setFrame(frame);
     return this;
   }
 
-  getTopGroundType(elevation: number): GroundType {
-    return this.ground[elevation];
+  deleteGroundOnTop(): Tile {
+    if (this.zorder.length == 0) return this;
+    const deleted = this.zorder.pop();
+    deleted.groundSprite.destroy();
+    return this;
   }
 
-  addEdge(edge: Direction, elevation: number): Tile {
-    const ground = this.ground[elevation];
-    if (!ground) return;
-    if (ground.type.includes(edge)) return;
-    return this.setGround(addEdgeToGround(edge, ground), elevation);
+  addEdgeOnTop(edge: Direction, groundKindFilter: string): boolean {
+    const topGround = this.getTopGround();
+    if (!topGround) return false;
+    if (topGround.kind != groundKindFilter) return false;
+    if (topGround.type.includes(edge)) return true;
+    this.replaceGroundOnTop(addEdgeToGround(edge, topGround));
+    return true;
   }
 
-  removeEdge(edge: Direction, elevation: number): Tile {
-    const ground = this.ground[elevation];
-    if (!ground) return;
-    if (!ground.type.includes(edge)) return;
-    return this.setGround(removeEdgeFromGround(edge, ground), elevation);
+  removeEdgeOnTop(edge: Direction, groundKindFilter: string): boolean {
+    const topGround = this.getTopGround();
+    if (!topGround) return false;
+    if (topGround.kind != groundKindFilter) return false;
+    if (!topGround.type.includes(edge)) return true;
+    this.replaceGroundOnTop(removeEdgeFromGround(edge, topGround));
+    return true;
+  }
+
+  getTopPassable(): TilePassable {
+    let passable = { up: false, down: false, left: false, right: false, radius: Number.MAX_VALUE };
+    for (let zorder = 0; zorder < this.zorder.length; zorder++) {
+      const groundSpec = this.zorder[zorder].groundSpec;
+      passable.radius = Math.min(passable.radius, groundSpec.passable.radius);
+      passable.up ||= !!groundSpec.passable.up;
+      passable.down ||= !!groundSpec.passable.down;
+      passable.left ||= !!groundSpec.passable.left;
+      passable.right ||= !!groundSpec.passable.right;
+    }
+    if (passable.radius == Number.MAX_VALUE) passable.radius = undefined;
+    return passable;
   }
 }
 

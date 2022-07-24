@@ -71,7 +71,7 @@ export default class Tile {
     groundSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation);
     this.zorder.push({
       elevation,
-      ground,
+      ground: { kind: ground.kind, type: ground.type },
       groundSpec,
       groundSprite,
     });
@@ -87,7 +87,7 @@ export default class Tile {
     const groundSpec = tileSpec[ground.kind].types[ground.type];
     const frame = groundSpec.sprite.frame;
     const resource = groundSpec.sprite.resource; // TODO: handle different resource
-    this.zorder[zorder].ground = ground;
+    this.zorder[zorder].ground = { kind: ground.kind, type: ground.type };
     this.zorder[zorder].groundSpec = groundSpec;
     this.zorder[zorder].groundSprite.setFrame(frame);
     return this;
@@ -100,24 +100,29 @@ export default class Tile {
     return this;
   }
 
-  addEdgeOnTopKind(edge: Direction, groundKind: string): boolean {
+  doesKindExist(groundKind: string): boolean {
     const zorder = this.getTopZorderOfKind(groundKind);
-    if (isNaN(zorder)) return false;
-    const ground = this.getGround(zorder);
-    if (!ground) return false;
-    if (ground.type.includes(edge)) return true;
-    this.replaceGround(addEdgeToGround(edge, ground), zorder);
-    return true;
+    return !isNaN(zorder);
   }
 
-  removeEdgeOnTopKind(edge: Direction, groundKind: string): boolean {
+  addEdgeOnTopKind(edge: Direction, groundKind: string): Tile {
     const zorder = this.getTopZorderOfKind(groundKind);
-    if (isNaN(zorder)) return false;
+    if (isNaN(zorder)) return this;
     const ground = this.getGround(zorder);
-    if (!ground) return false;
-    if (!ground.type.includes(edge)) return true;
+    if (!ground) return this;
+    if (ground.type.includes(edge)) return this;
+    this.replaceGround(addEdgeToGround(edge, ground), zorder);
+    return this;
+  }
+
+  removeEdgeOnTopKind(edge: Direction, groundKind: string): Tile {
+    const zorder = this.getTopZorderOfKind(groundKind);
+    if (isNaN(zorder)) return this;
+    const ground = this.getGround(zorder);
+    if (!ground) return this;
+    if (!ground.type.includes(edge)) return this;
     this.replaceGround(removeEdgeFromGround(edge, ground), zorder);
-    return true;
+    return this;
   }
 
   getTopPassable(): TilePassable {

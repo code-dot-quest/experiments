@@ -218,5 +218,25 @@
         "sprite": { "resource": "rock", "frame": "19" }
       }
     }
+  },
+  "cliff": {
+    "types": {
+      "left": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "12" }
+      },
+      "middle": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "13" }
+      },
+      "right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "14" }
+      },
+      "left-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "15" }
+      }
+    }
   }
 }

@@ -2,20 +2,24 @@ import $ from "cash-dom";
 import mapEditorSpec from "./map.json";
 import { GroundType } from "../world/tile";
 
-type OnTileSelected = (ground: GroundType) => void;
+type OnTileSelected = (tile: GroundType) => void;
 type OnSave = () => void;
 type OnLoad = (json: any) => void;
 type OnGridToggled = (enabled: boolean) => void;
+type OnElevationChanged = (elevation: number) => void;
 
 export default class MapEditor {
   public selectedTile: GroundType;
+  public elevation: number;
   protected onTileSelectedHandler: OnTileSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
   protected onGridToggledHandler: OnGridToggled;
+  protected onElevationChangedHandler: OnElevationChanged;
 
   constructor() {
     this.selectedTile = this.getDefaultGround();
+    this.elevation = 1;
     const instance = this;
     $(() => {
       for (const ground of mapEditorSpec.ground) {
@@ -41,6 +45,12 @@ export default class MapEditor {
       $("#editor-grid-toggle").on("change", (event) => {
         const $el = $(event.currentTarget);
         if (this.onGridToggledHandler) this.onGridToggledHandler($el.is(":checked"));
+      });
+
+      $("#editor-elevation").on("change", (event) => {
+        const $el = $(event.currentTarget);
+        this.elevation = parseInt($el.val() as string);
+        if (this.onElevationChangedHandler) this.onElevationChangedHandler(this.elevation);
       });
 
       $("#editor-save").on("click", () => {
@@ -80,6 +90,10 @@ export default class MapEditor {
 
   onGridToggled(handler: OnGridToggled) {
     this.onGridToggledHandler = handler;
+  }
+
+  onElevationChanged(handler: OnElevationChanged) {
+    this.onElevationChangedHandler = handler;
   }
 
   getDefaultGround(): GroundType {

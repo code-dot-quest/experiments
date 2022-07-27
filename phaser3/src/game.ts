@@ -23,6 +23,7 @@ interface TilePreview {
   y: number;
   ground: GroundType;
   deleted: GroundType;
+  deletedElevation: number;
 }
 
 export default class Demo extends Phaser.Scene {
@@ -67,13 +68,14 @@ export default class Demo extends Phaser.Scene {
       const blob = new Blob([JSON.stringify(levelJson)], { type: "text/plain;charset=utf-8" });
       saveAs(blob, "level.json");
     });
-    mapEditor.onLoad((json: any) => {
+    mapEditor.onLoad((json) => {
       const levelJson = json as LevelJson;
       this.map.loadFromJson(levelJson.map);
     });
-    mapEditor.onGridToggled((enabled: boolean) => {
+    mapEditor.onGridToggled((enabled) => {
       this.grid.visible = enabled;
     });
+    mapEditor.onElevationChanged((elevation) => {});
   }
 
   update(time) {
@@ -86,18 +88,19 @@ export default class Demo extends Phaser.Scene {
       if (this.preview?.x != pointerX || this.preview?.y != pointerY || time - this.input.activePointer.time > 1000) {
         if (this.preview) {
           // remove the preview
-          if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted);
+          if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted, this.preview.deletedElevation);
           else this.map.deleteTile(this.preview.x, this.preview.y);
           this.preview = undefined;
         }
         if (time - this.input.activePointer.time < 1000) {
           // create new preview
           const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTop();
+          const elevation = this.map.getTile(pointerX, pointerY)?.getElevationOnTop();
           let success = false;
           if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY);
-          else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile);
+          else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile, mapEditor.elevation);
           if (success) {
-            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground };
+            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground, deletedElevation: elevation };
           }
         }
       }

@@ -46,6 +46,18 @@ export default class Tile {
     return this.zorder[zorder]?.ground;
   }
 
+  getElevationOnTop(): number {
+    return this.getElevation(this.zorder.length - 1);
+  }
+
+  getElevationOnSecondTop(): number {
+    return this.getElevation(this.zorder.length - 2);
+  }
+
+  getElevation(zorder: number): number {
+    return this.zorder[zorder]?.elevation;
+  }
+
   getTopZorderOfKind(groundKind: string): number {
     for (let zorder = this.zorder.length - 1; zorder >= 0; zorder--) {
       if (groundKind == this.zorder[zorder].ground.kind) return zorder;
@@ -61,9 +73,8 @@ export default class Tile {
     return this.zorder.length;
   }
 
-  addGroundOnTop(ground: GroundType): Tile {
+  addGroundOnTop(ground: GroundType, elevation: number): Tile {
     if (this.getGroundOnTop()?.kind == ground.kind) return this;
-    const elevation = 1; // TODO: fix
     const groundSpec = tileSpec[ground.kind].types[ground.type];
     const frame = groundSpec.sprite.frame;
     const resource = groundSpec.sprite.resource;

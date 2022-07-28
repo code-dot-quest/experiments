@@ -58,8 +58,9 @@ export default class Tile {
     return this.zorder[zorder]?.elevation;
   }
 
-  getTopZorderOfKind(groundKind: string): number {
+  getTopZorderOfKind(groundKind: string, elevation: number): number {
     for (let zorder = this.zorder.length - 1; zorder >= 0; zorder--) {
+      if (elevation != this.zorder[zorder].elevation) continue;
       if (groundKind == this.zorder[zorder].ground.kind) return zorder;
     }
     return NaN;
@@ -111,13 +112,13 @@ export default class Tile {
     return this;
   }
 
-  doesKindExist(groundKind: string): boolean {
-    const zorder = this.getTopZorderOfKind(groundKind);
+  doesKindExist(groundKind: string, elevation: number): boolean {
+    const zorder = this.getTopZorderOfKind(groundKind, elevation);
     return !isNaN(zorder);
   }
 
-  addEdgeOnTopKind(edge: Direction, groundKind: string): Tile {
-    const zorder = this.getTopZorderOfKind(groundKind);
+  addEdgeOnTopKind(edge: Direction, groundKind: string, elevation: number): Tile {
+    const zorder = this.getTopZorderOfKind(groundKind, elevation);
     if (isNaN(zorder)) return this;
     const ground = this.getGround(zorder);
     if (!ground) return this;
@@ -126,8 +127,8 @@ export default class Tile {
     return this;
   }
 
-  removeEdgeOnTopKind(edge: Direction, groundKind: string): Tile {
-    const zorder = this.getTopZorderOfKind(groundKind);
+  removeEdgeOnTopKind(edge: Direction, groundKind: string, elevation: number): Tile {
+    const zorder = this.getTopZorderOfKind(groundKind, elevation);
     if (isNaN(zorder)) return this;
     const ground = this.getGround(zorder);
     if (!ground) return this;

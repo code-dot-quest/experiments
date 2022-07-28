@@ -28,20 +28,17 @@ export default class Map {
   addTile(x: number, y: number, ground: GroundType, elevation: number): boolean {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
-    if (this.getTile(x, y)?.getGroundOnTop()?.kind == ground.kind) return false;
-
-    if (elevation == 2) {
-      if (this.getTile(x, y)?.getElevationOnTop() == 1) {
-        this.tiles[y][x].addGroundOnTop({ kind: "cliff", type: "middle" }, 1.5);
-      }
-      if (this.getTile(x, y + 1)?.getElevationOnTop() == 1) {
-        this.tiles[y + 1][x].addGroundOnTop({ kind: "cliff", type: "middle" }, 1.5);
-      }
+    if (this.getTile(x, y + 1)?.getElevationOnTop() < elevation - 1) return false;
+    if (this.getTile(x, y + 1)?.getElevationOnTop() > elevation) return false;
+    if (this.getTile(x, y)?.getElevationOnTop() == elevation && this.getTile(x, y)?.getGroundOnTop()?.kind == ground.kind) return false;
+    if (this.getTile(x, y)?.getElevationOnTop() <= elevation - 1) {
+      this.tiles[y][x].addGroundOnTop({ kind: "cliff", type: "middle" }, elevation - 0.5);
     }
-
+    if (this.getTile(x, y + 1)?.getElevationOnTop() <= elevation - 1) {
+      this.tiles[y + 1][x].addGroundOnTop({ kind: "cliff", type: "middle" }, elevation - 0.5);
+    }
     this.tiles[y][x].addGroundOnTop(ground, elevation);
-    this.fixAutotile(x, y, ground.kind);
-
+    this.fixAutotile(x, y, ground.kind, elevation);
     return true;
   }
 
@@ -49,61 +46,53 @@ export default class Map {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
     if (this.getTile(x, y)?.getNumGrounds() <= 1) return false;
-
     const elevation = this.getTile(x, y)?.getElevationOnTop();
     const ground = this.getTile(x, y)?.getGroundOnTop();
-
-    if (elevation == 1) {
+    if (elevation % 1 == 0.5) return false;
+    this.tiles[y][x].deleteGroundOnTop();
+    this.fixAutotile(x, y, ground.kind, elevation);
+    if (this.getTile(x, y)?.getElevationOnTop() == elevation - 0.5 && this.getTile(x, y - 1)?.getElevationOnTop() != elevation) {
       this.tiles[y][x].deleteGroundOnTop();
-      this.fixAutotile(x, y, ground.kind);
     }
-    if (elevation == 2) {
-      this.tiles[y][x].deleteGroundOnTop();
-      this.fixAutotile(x, y, ground.kind);
-      if (this.getTile(x, y - 1)?.getElevationOnTop() != 2) {
-        this.tiles[y][x].deleteGroundOnTop();
-      }
-      if (this.getTile(x, y + 1)?.getElevationOnTop() == 1.5) {
-        this.tiles[y + 1][x].deleteGroundOnTop();
-      }
+    if (this.getTile(x, y)?.getElevationOnTop() != elevation && this.getTile(x, y + 1)?.getElevationOnTop() == elevation - 0.5) {
+      this.tiles[y + 1][x].deleteGroundOnTop();
     }
-
     return true;
   }
 
-  fixAutotile(x: number, y: number, groundKind: string) {
-    const selfFound = this.getTile(x, y)?.doesKindExist(groundKind);
-    const upFound = this.getTile(x, y - 1)?.doesKindExist(groundKind);
-    const downFound = this.getTile(x, y + 1)?.doesKindExist(groundKind);
-    const leftFound = this.getTile(x - 1, y)?.doesKindExist(groundKind);
-    const rightFound = this.getTile(x + 1, y)?.doesKindExist(groundKind);
+  fixAutotile(x: number, y: number, groundKind: string, elevation: number) {
+    const selfFound = this.getTile(x, y)?.doesKindExist(groundKind, elevation);
+    const upFound = this.getTile(x, y - 1)?.doesKindExist(groundKind, elevation);
+    const downFound = this.getTile(x, y + 1)?.doesKindExist(groundKind, elevation);
+    const leftFound = this.getTile(x - 1, y)?.doesKindExist(groundKind, elevation);
+    const rightFound = this.getTile(x + 1, y)?.doesKindExist(groundKind, elevation);
     if (upFound && selfFound) {
-      this.getTile(x, y)?.removeEdgeOnTopKind("up", groundKind);
-      this.getTile(x, y - 1)?.removeEdgeOnTopKind("down", groundKind);
+      this.getTile(x, y)?.removeEdgeOnTopKind("up", groundKind, elevation);
+      this.getTile(x, y - 1)?.removeEdgeOnTopKind("down", groundKind, elevation);
     } else {
-      this.getTile(x, y)?.addEdgeOnTopKind("up", groundKind);
-      this.getTile(x, y - 1)?.addEdgeOnTopKind("down", groundKind);
+      this.getTile(x, y)?.addEdgeOnTopKind("up", groundKind, elevation);
+      this.getTile(x, y - 1)?.addEdgeOnTopKind("down", groundKind, elevation);
     }
     if (downFound && selfFound) {
-      this.getTile(x, y)?.removeEdgeOnTopKind("down", groundKind);
-      this.getTile(x, y + 1)?.removeEdgeOnTopKind("up", groundKind);
+      this.getTile(x, y)?.removeEdgeOnTopKind("down", groundKind, elevation);
+      this.getTile(x, y + 1)?.removeEdgeOnTopKind("up", groundKind, elevation);
     } else {
-      this.getTile(x, y)?.addEdgeOnTopKind("down", groundKind);
-      this.getTile(x, y + 1)?.addEdgeOnTopKind("up", groundKind);
+      this.getTile(x, y)?.addEdgeOnTopKind("down", groundKind, elevation);
+      this.getTile(x, y + 1)?.addEdgeOnTopKind("up", groundKind, elevation);
     }
     if (leftFound && selfFound) {
-      this.getTile(x, y)?.removeEdgeOnTopKind("left", groundKind);
-      this.getTile(x - 1, y)?.removeEdgeOnTopKind("right", groundKind);
+      this.getTile(x, y)?.removeEdgeOnTopKind("left", groundKind, elevation);
+      this.getTile(x - 1, y)?.removeEdgeOnTopKind("right", groundKind, elevation);
     } else {
-      this.getTile(x, y)?.addEdgeOnTopKind("left", groundKind);
-      this.getTile(x - 1, y)?.addEdgeOnTopKind("right", groundKind);
+      this.getTile(x, y)?.addEdgeOnTopKind("left", groundKind, elevation);
+      this.getTile(x - 1, y)?.addEdgeOnTopKind("right", groundKind, elevation);
     }
     if (rightFound && selfFound) {
-      this.getTile(x, y)?.removeEdgeOnTopKind("right", groundKind);
-      this.getTile(x + 1, y)?.removeEdgeOnTopKind("left", groundKind);
+      this.getTile(x, y)?.removeEdgeOnTopKind("right", groundKind, elevation);
+      this.getTile(x + 1, y)?.removeEdgeOnTopKind("left", groundKind, elevation);
     } else {
-      this.getTile(x, y)?.addEdgeOnTopKind("right", groundKind);
-      this.getTile(x + 1, y)?.addEdgeOnTopKind("left", groundKind);
+      this.getTile(x, y)?.addEdgeOnTopKind("right", groundKind, elevation);
+      this.getTile(x + 1, y)?.addEdgeOnTopKind("left", groundKind, elevation);
     }
   }
 

@@ -42,11 +42,11 @@ export default class Map {
     return true;
   }
 
-  deleteTile(x: number, y: number): boolean {
+  deleteTile(x: number, y: number, elevation: number): boolean {
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
     if (this.getTile(x, y)?.getNumGrounds() <= 1) return false;
-    const elevation = this.getTile(x, y)?.getElevationOnTop();
+    if (this.getTile(x, y)?.getElevationOnTop() != elevation) return false;
     const ground = this.getTile(x, y)?.getGroundOnTop();
     if (elevation % 1 == 0.5) return false;
     this.tiles[y][x].deleteGroundOnTop();

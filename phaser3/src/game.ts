@@ -89,7 +89,7 @@ export default class Demo extends Phaser.Scene {
         if (this.preview) {
           // remove the preview
           if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted, this.preview.deletedElevation);
-          else this.map.deleteTile(this.preview.x, this.preview.y);
+          else this.map.deleteTile(this.preview.x, this.preview.y, mapEditor.elevation);
           this.preview = undefined;
         }
         if (time - this.input.activePointer.time < 1000) {
@@ -97,7 +97,7 @@ export default class Demo extends Phaser.Scene {
           const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTop();
           const elevation = this.map.getTile(pointerX, pointerY)?.getElevationOnTop();
           let success = false;
-          if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY);
+          if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY, mapEditor.elevation);
           else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile, mapEditor.elevation);
           if (success) {
             this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground, deletedElevation: elevation };

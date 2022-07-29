@@ -58,12 +58,14 @@ export default class Tile {
     return this.zorder[zorder]?.elevation;
   }
 
-  getTopZorderOfKind(groundKind: string, elevation: number): number {
+  getTopZorderOfKind(groundKind: string, elevation: number): { zorder: number; cliff: boolean } {
+    const res = { zorder: NaN, cliff: groundKind == "rock" };
     for (let zorder = this.zorder.length - 1; zorder >= 0; zorder--) {
-      if (elevation != this.zorder[zorder].elevation) continue;
-      if (groundKind == this.zorder[zorder].ground.kind) return zorder;
+      if (Math.ceil(elevation) != Math.ceil(this.zorder[zorder].elevation)) continue; // rock in 1.5 and grass in 2 are both similar
+      if (groundKind == "rock" && this.zorder[zorder].ground.kind != "rock") res.cliff = false;
+      if (groundKind == this.zorder[zorder].ground.kind) return { zorder, cliff: res.cliff };
     }
-    return NaN;
+    return res;
   }
 
   getGroundArray(): GroundType[] {
@@ -113,27 +115,31 @@ export default class Tile {
   }
 
   doesKindExist(groundKind: string, elevation: number): boolean {
-    const zorder = this.getTopZorderOfKind(groundKind, elevation);
+    const { zorder } = this.getTopZorderOfKind(groundKind, elevation);
     return !isNaN(zorder);
   }
 
   addEdgeOnTopKind(edge: Direction, groundKind: string, elevation: number): Tile {
-    const zorder = this.getTopZorderOfKind(groundKind, elevation);
+    const { zorder, cliff } = this.getTopZorderOfKind(groundKind, elevation);
     if (isNaN(zorder)) return this;
     const ground = this.getGround(zorder);
     if (!ground) return this;
-    if (ground.type.includes(edge)) return this;
-    this.replaceGround(addEdgeToGround(edge, ground), zorder);
+    // if (ground.type.includes(edge)) return this;
+    const newGround = addEdgeToGround(edge, ground);
+    if (cliff) newGround.type = "cliff-" + newGround.type;
+    this.replaceGround(newGround, zorder);
     return this;
   }
 
   removeEdgeOnTopKind(edge: Direction, groundKind: string, elevation: number): Tile {
-    const zorder = this.getTopZorderOfKind(groundKind, elevation);
+    const { zorder, cliff } = this.getTopZorderOfKind(groundKind, elevation);
     if (isNaN(zorder)) return this;
     const ground = this.getGround(zorder);
     if (!ground) return this;
-    if (!ground.type.includes(edge)) return this;
-    this.replaceGround(removeEdgeFromGround(edge, ground), zorder);
+    // if (!ground.type.includes(edge)) return this;
+    const newGround = removeEdgeFromGround(edge, ground);
+    if (cliff) newGround.type = "cliff-" + newGround.type;
+    this.replaceGround(newGround, zorder);
     return this;
   }
 

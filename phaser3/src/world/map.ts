@@ -26,19 +26,25 @@ export default class Map {
   }
 
   addTile(x: number, y: number, ground: GroundType, elevation: number): boolean {
+    let fixRockXY = false,
+      fixRockXYp1 = false;
     if (x >= this.width || x < 0) return false;
     if (y >= this.height || y < 0) return false;
     if (this.getTile(x, y + 1)?.getElevationOnTop() < elevation - 1) return false;
     if (this.getTile(x, y + 1)?.getElevationOnTop() > elevation) return false;
     if (this.getTile(x, y)?.getElevationOnTop() == elevation && this.getTile(x, y)?.getGroundOnTop()?.kind == ground.kind) return false;
     if (this.getTile(x, y)?.getElevationOnTop() <= elevation - 1) {
-      this.tiles[y][x].addGroundOnTop({ kind: "cliff", type: "middle" }, elevation - 0.5);
+      this.tiles[y][x].addGroundOnTop({ kind: "rock", type: "middle" }, elevation - 0.5);
+      fixRockXY = true;
     }
     if (this.getTile(x, y + 1)?.getElevationOnTop() <= elevation - 1) {
-      this.tiles[y + 1][x].addGroundOnTop({ kind: "cliff", type: "middle" }, elevation - 0.5);
+      this.tiles[y + 1][x].addGroundOnTop({ kind: "rock", type: "middle" }, elevation - 0.5);
+      fixRockXYp1 = true;
     }
     this.tiles[y][x].addGroundOnTop(ground, elevation);
     this.fixAutotile(x, y, ground.kind, elevation);
+    if (fixRockXY) this.fixAutotile(x, y, "rock", elevation - 0.5);
+    if (fixRockXYp1) this.fixAutotile(x, y + 1, "rock", elevation - 0.5);
     return true;
   }
 
@@ -53,9 +59,11 @@ export default class Map {
     this.fixAutotile(x, y, ground.kind, elevation);
     if (this.getTile(x, y)?.getElevationOnTop() == elevation - 0.5 && this.getTile(x, y - 1)?.getElevationOnTop() != elevation) {
       this.tiles[y][x].deleteGroundOnTop();
+      this.fixAutotile(x, y, "rock", elevation - 0.5);
     }
     if (this.getTile(x, y)?.getElevationOnTop() != elevation && this.getTile(x, y + 1)?.getElevationOnTop() == elevation - 0.5) {
       this.tiles[y + 1][x].deleteGroundOnTop();
+      this.fixAutotile(x, y + 1, "rock", elevation - 0.5);
     }
     return true;
   }

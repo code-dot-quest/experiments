@@ -216,24 +216,68 @@
       "up-down-left-right": {
         "passable": {},
         "sprite": { "resource": "rock", "frame": "19" }
-      }
-    }
-  },
-  "cliff": {
-    "types": {
-      "left": {
+      },
+      "cliff-left": {
         "passable": {},
         "sprite": { "resource": "rock", "frame": "12" }
       },
-      "middle": {
+      "cliff-middle": {
         "passable": {},
         "sprite": { "resource": "rock", "frame": "13" }
       },
-      "right": {
+      "cliff-right": {
         "passable": {},
         "sprite": { "resource": "rock", "frame": "14" }
       },
-      "left-right": {
+      "cliff-left-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "15" }
+      },
+      "cliff-up-left": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "12" }
+      },
+      "cliff-up": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "13" }
+      },
+      "cliff-up-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "14" }
+      },
+      "cliff-up-left-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "15" }
+      },
+      "cliff-down-left": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "12" }
+      },
+      "cliff-down": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "13" }
+      },
+      "cliff-down-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "14" }
+      },
+      "cliff-down-left-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "15" }
+      },
+      "cliff-up-down-left": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "12" }
+      },
+      "cliff-up-down": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "13" }
+      },
+      "cliff-up-down-right": {
+        "passable": {},
+        "sprite": { "resource": "rock", "frame": "14" }
+      },
+      "cliff-up-down-left-right": {
         "passable": {},
         "sprite": { "resource": "rock", "frame": "15" }
       }

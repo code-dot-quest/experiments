@@ -97,6 +97,7 @@ export default class Tile {
   }
 
   replaceGround(ground: GroundType, zorder: number): Tile {
+    // console.log(`replaceGround (${this.x},${this.y}) ${ground.kind} ${ground.type}`);
     if (zorder < 0 || zorder >= this.zorder.length) return this;
     const groundSpec = tileSpec[ground.kind].types[ground.type];
     const frame = groundSpec.sprite.frame;
@@ -114,9 +115,9 @@ export default class Tile {
     return this;
   }
 
-  doesKindExist(groundKind: string, elevation: number): boolean {
-    const { zorder } = this.getTopZorderOfKind(groundKind, elevation);
-    return !isNaN(zorder);
+  doesKindExist(groundKind: string, elevation: number): { found: boolean; cliff: boolean } {
+    const { zorder, cliff } = this.getTopZorderOfKind(groundKind, elevation);
+    return { found: !isNaN(zorder), cliff };
   }
 
   addEdgeOnTopKind(edge: Direction, groundKind: string, elevation: number): Tile {

@@ -196,17 +196,14 @@ export default class Map {
   }
 
   loadFromJson(json: MapJson) {
-    for (let y = this.height - 1; y >= 0; y--) {
-      for (let x = 0; x < this.width; x++) {
-        const tile = json.ground[y][x];
-        for (let zorder = 0; zorder < tile.zorder.length; zorder++) {
-          this.addTile(x, y, tile.zorder[zorder], tile.zorder[zorder].elevation);
+    for (let elevation = 1; elevation <= 5; elevation++) {
+      for (let y = 0; y < this.height; y++) {
+        for (let x = 0; x < this.width; x++) {
+          const tile = json.ground[y][x];
+          for (let zorder = 0; zorder < tile.zorder.length; zorder++) {
+            if (tile.zorder[zorder].elevation == elevation) this.addTile(x, y, tile.zorder[zorder], elevation);
+          }
         }
-      }
-    }
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        this.fixEffects(x, y);
       }
     }
   }

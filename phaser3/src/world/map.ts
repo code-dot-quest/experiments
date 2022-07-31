@@ -32,7 +32,7 @@ export default class Map {
     // make sure we have what to add (and we didn't already add this one)
     if (this.getTile(x, y)?.getGroundOnTopAtElevation(elevation)?.kind == ground.kind) return false;
     // constrains on when we can add different elevations
-    if (this.getTile(x, y + 1)?.getElevationOnTop() < elevation - 1) return false;
+    if (this.getTile(x, y + 1)?.getNumGroundsAtElevation(elevation - 1) == 0) return false;
     // handle cliffs on self and below
     if (this.getTile(x, y)?.getElevationOnTop() <= elevation - 1) {
       this.tiles[y][x].addGroundOnTopAtElevation({ kind: "rock", type: "middle" }, elevation - 0.5);

@@ -137,9 +137,9 @@ export default class Map {
     this.getTile(x, y)?.setEffect("cliff-transition-grass", selfGroundOnTop?.kind == "rock" && selfGroundOnTop?.type.includes("cliff") && selfGroundBase?.kind == "grass", selfElevation);
     this.getTile(x, y)?.setEffect("cliff-transition-sand", selfGroundOnTop?.kind == "rock" && selfGroundOnTop?.type.includes("cliff") && selfGroundBase?.kind == "sand", selfElevation);
     // cliff shadows
-    const cliffShadowUp = selfGroundCliff?.type.includes("down") && upElevation >= selfElevation && selfElevation - downElevation < 1;
-    const cliffShadowRight = selfGroundCliff?.type.includes("left") && upElevation >= selfElevation && selfElevation - downElevation < 1;
-    const cliffShadowLeft = selfGroundCliff?.type.includes("right") && upElevation >= selfElevation && selfElevation - downElevation < 1;
+    const cliffShadowUp = selfGroundCliff?.type.includes("down") && upElevation >= selfElevation && Math.floor(selfElevation) == Math.floor(downElevation);
+    const cliffShadowRight = selfGroundCliff?.type.includes("left") && !selfGroundBase?.type.includes("left") && upElevation >= selfElevation && selfElevation - downElevation <= 1;
+    const cliffShadowLeft = selfGroundCliff?.type.includes("right") && !selfGroundBase?.type.includes("right") && upElevation >= selfElevation && selfElevation - downElevation <= 1;
     this.getTile(x, y + 1)?.setEffect("cliff-shadow-up", cliffShadowUp, selfElevation);
     this.getTile(x - 1, y)?.setEffect("cliff-shadow-right", cliffShadowRight, selfElevation);
     this.getTile(x + 1, y)?.setEffect("cliff-shadow-left", cliffShadowLeft, selfElevation);
@@ -202,6 +202,11 @@ export default class Map {
         for (let zorder = 0; zorder < tile.zorder.length; zorder++) {
           this.addTile(x, y, tile.zorder[zorder], tile.zorder[zorder].elevation);
         }
+      }
+    }
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        this.fixEffects(x, y);
       }
     }
   }

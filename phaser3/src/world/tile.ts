@@ -50,10 +50,6 @@ export default class Tile {
     return this.getElevation(this.zorder.length - 1);
   }
 
-  getElevationOnSecondTop(): number {
-    return this.getElevation(this.zorder.length - 2);
-  }
-
   getElevation(zorder: number): number {
     return this.zorder[zorder]?.elevation;
   }
@@ -82,7 +78,7 @@ export default class Tile {
     const frame = groundSpec.sprite.frame;
     const resource = groundSpec.sprite.resource;
     const groundSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
-    groundSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation);
+    groundSprite.setOrigin(0, 0).setDepth(this.y - 10000 + (ground.kind != "water" ? elevation : 0));
     this.zorder.push({
       elevation,
       ground: { kind: ground.kind, type: ground.type },

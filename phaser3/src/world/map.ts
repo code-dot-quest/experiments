@@ -52,7 +52,7 @@ export default class Map {
     const ground = this.getTile(x, y)?.getGroundOnTop();
     if (elevation % 1 == 0.5) return false;
     this.tiles[y][x].deleteGroundOnTop();
-    if (this.getTile(x, y)?.getElevationOnTop() == elevation - 0.5 && this.getTile(x, y - 1)?.getElevationOnTop() < elevation) {
+    if (this.getTile(x, y)?.getElevationOnTop() == elevation - 0.5 && (this.getTile(x, y - 1)?.getElevationOnTop() ?? 0) < elevation) {
       this.tiles[y][x].deleteGroundOnTop();
     }
     if (this.getTile(x, y + 1)?.getElevationOnTop() == elevation - 0.5 && this.getTile(x, y)?.getElevationOnTop() != elevation) {

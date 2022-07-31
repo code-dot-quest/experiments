@@ -69,6 +69,7 @@ export default class Demo extends Phaser.Scene {
       saveAs(blob, "level.json");
     });
     mapEditor.onLoad((json) => {
+      this.preview = undefined;
       const levelJson = json as LevelJson;
       this.map.loadFromJson(levelJson.map);
     });
@@ -94,13 +95,12 @@ export default class Demo extends Phaser.Scene {
         }
         if (time - this.input.activePointer.time < 1000) {
           // create new preview
-          const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTop();
-          const elevation = this.map.getTile(pointerX, pointerY)?.getElevationOnTop();
+          const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTopAtElevation(mapEditor.elevation);
           let success = false;
           if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY, mapEditor.elevation);
           else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile, mapEditor.elevation);
           if (success) {
-            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground, deletedElevation: elevation };
+            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground, deletedElevation: mapEditor.elevation };
           }
         }
       }

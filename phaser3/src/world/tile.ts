@@ -202,10 +202,12 @@ export default class Tile {
         const frame = effectSpec.sprite.frame;
         const resource = effectSpec.sprite.resource;
         const effectSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
-        if (effect.startsWith("cliff-shadow-")) effectSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation - 0.25);
-        else effectSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation + 0.25);
+        effectSprite.setOrigin(0, 0);
         this.effects[effect] = effectSprite;
       }
+      const effectSprite = this.effects[effect];
+      if (effect.startsWith("cliff-shadow-")) effectSprite.setDepth(this.y - 10000 + elevation - 0.25);
+      else effectSprite.setDepth(this.y - 10000 + elevation + 0.25);
     } else {
       if (this.effects[effect]) {
         this.effects[effect].destroy();

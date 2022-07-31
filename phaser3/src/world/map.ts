@@ -138,8 +138,8 @@ export default class Map {
     this.getTile(x, y)?.setEffect("cliff-transition-sand", selfGroundOnTop?.kind == "rock" && selfGroundOnTop?.type.includes("cliff") && selfGroundBase?.kind == "sand", selfElevation);
     // cliff shadows
     const cliffShadowUp = selfGroundCliff?.type.includes("down") && upElevation >= selfElevation && Math.floor(downElevation) >= Math.floor(selfElevation);
-    const cliffShadowRight = selfGroundCliff?.type.includes("left") && upElevation >= selfElevation;
-    const cliffShadowLeft = selfGroundCliff?.type.includes("right") && upElevation >= selfElevation;
+    const cliffShadowRight = selfGroundCliff?.type.includes("left") && upElevation >= selfElevation && Math.floor(downElevation) >= Math.floor(selfElevation);
+    const cliffShadowLeft = selfGroundCliff?.type.includes("right") && upElevation >= selfElevation && Math.floor(downElevation) >= Math.floor(selfElevation);
     this.getTile(x, y + 1)?.setEffect("cliff-shadow-up", cliffShadowUp, selfElevation);
     this.getTile(x - 1, y)?.setEffect("cliff-shadow-right", cliffShadowRight, selfElevation);
     this.getTile(x + 1, y)?.setEffect("cliff-shadow-left", cliffShadowLeft, selfElevation);

@@ -46,6 +46,13 @@ export default class Map {
     this.fixAutotile(x, y, ground.kind, elevation);
     this.fixAutotile(x, y, "rock", elevation - 0.5);
     this.fixAutotile(x, y + 1, "rock", elevation - 0.5);
+    // effects
+    this.fixEffects(x, y);
+    this.fixEffects(x, y + 1);
+    this.fixEffects(x + 1, y);
+    this.fixEffects(x - 1, y);
+    this.fixEffects(x + 1, y + 1);
+    this.fixEffects(x - 1, y + 1);
     return true;
   }
 
@@ -73,6 +80,13 @@ export default class Map {
     this.fixAutotile(x, y, ground.kind, elevation);
     this.fixAutotile(x, y, "rock", elevation - 0.5);
     this.fixAutotile(x, y + 1, "rock", elevation - 0.5);
+    // effects
+    this.fixEffects(x, y);
+    this.fixEffects(x, y + 1);
+    this.fixEffects(x + 1, y);
+    this.fixEffects(x - 1, y);
+    this.fixEffects(x + 1, y + 1);
+    this.fixEffects(x - 1, y + 1);
     return true;
   }
 
@@ -110,6 +124,26 @@ export default class Map {
       this.getTile(x, y)?.addEdgeOnTopKindAtElevation("right", groundKind, elevation);
       this.getTile(x + 1, y)?.addEdgeOnTopKindAtElevation("left", groundKind, elevation);
     }
+  }
+
+  fixEffects(x: number, y: number) {
+    const selfElevation = this.getTile(x, y)?.getElevationOnTop();
+    const selfGroundOnTop = this.getTile(x, y)?.getGroundOnTop();
+    const selfGroundCliff = this.getTile(x, y)?.getGroundOnTopAtElevation(Math.ceil(selfElevation) - 0.5);
+    const selfGroundBase = this.getTile(x, y)?.getGroundOnTopAtElevation(Math.ceil(selfElevation) - 1);
+    const upElevation = this.getTile(x, y - 1)?.getElevationOnTop();
+    const downElevation = this.getTile(x, y + 1)?.getElevationOnTop();
+    // transitions
+    this.getTile(x, y)?.setEffect("cliff-transition-grass", selfGroundOnTop?.kind == "rock" && selfGroundOnTop?.type.includes("cliff") && selfGroundBase?.kind == "grass", selfElevation);
+    this.getTile(x, y)?.setEffect("cliff-transition-sand", selfGroundOnTop?.kind == "rock" && selfGroundOnTop?.type.includes("cliff") && selfGroundBase?.kind == "sand", selfElevation);
+    // cliff shadows
+    const cliffShadowUp = selfGroundCliff?.type.includes("down") && upElevation >= selfElevation && Math.floor(downElevation) >= Math.floor(selfElevation);
+    const cliffShadowRight = selfGroundCliff?.type.includes("left") && upElevation >= selfElevation;
+    const cliffShadowLeft = selfGroundCliff?.type.includes("right") && upElevation >= selfElevation;
+    this.getTile(x, y + 1)?.setEffect("cliff-shadow-up", cliffShadowUp, selfElevation);
+    this.getTile(x - 1, y)?.setEffect("cliff-shadow-right", cliffShadowRight, selfElevation);
+    this.getTile(x + 1, y)?.setEffect("cliff-shadow-left", cliffShadowLeft, selfElevation);
+    this.getTile(x, y)?.setEffect("cliff-shadow-full", cliffShadowUp || cliffShadowRight || cliffShadowLeft, selfElevation);
   }
 
   getTile(x: number, y: number): Tile {

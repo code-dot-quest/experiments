@@ -37,9 +37,11 @@ export interface TileJson {
 
 export default class Tile {
   protected zorder: SingleTile[];
+  protected effects: { [effect: string]: Phaser.GameObjects.Sprite };
 
   constructor(protected scene: Phaser.Scene, protected x: number, protected y: number) {
     this.zorder = [];
+    this.effects = {};
   }
 
   getPosition(): { x: number; y: number } {
@@ -126,7 +128,7 @@ export default class Tile {
     const frame = groundSpec.sprite.frame;
     const resource = groundSpec.sprite.resource;
     const groundSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
-    groundSprite.setOrigin(0, 0).setDepth(this.y - 10000 + (ground.kind != "water" ? elevation : 0));
+    groundSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation);
     let zorder;
     for (zorder = 0; zorder < this.zorder.length; zorder++) {
       if (this.zorder[zorder].elevation > elevation) break;
@@ -191,6 +193,25 @@ export default class Tile {
           }
       ),
     };
+  }
+
+  setEffect(effect: string, enabled: boolean, elevation: number) {
+    if (enabled) {
+      if (!this.effects[effect]) {
+        const effectSpec = tileSpec["effect"].types[effect];
+        const frame = effectSpec.sprite.frame;
+        const resource = effectSpec.sprite.resource;
+        const effectSprite = this.scene.add.sprite(this.x * commonSpec.tileSize, this.y * commonSpec.tileSize, resource, frame);
+        if (effect.startsWith("cliff-shadow-")) effectSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation - 0.25);
+        else effectSprite.setOrigin(0, 0).setDepth(this.y - 10000 + elevation + 0.25);
+        this.effects[effect] = effectSprite;
+      }
+    } else {
+      if (this.effects[effect]) {
+        this.effects[effect].destroy();
+        delete this.effects[effect];
+      }
+    }
   }
 }
 

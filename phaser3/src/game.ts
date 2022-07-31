@@ -45,6 +45,7 @@ export default class Demo extends Phaser.Scene {
     this.load.aseprite("grass", "assets/grass.png", "assets/grass.json");
     this.load.aseprite("sand", "assets/sand.png", "assets/sand.json");
     this.load.aseprite("rock", "assets/rock.png", "assets/rock.json");
+    this.load.aseprite("effects", "assets/effects.png", "assets/effects.json");
     this.load.aseprite("tiles", "assets/tiles.png", "assets/tiles.json");
     this.load.aseprite("knight", "assets/knight.png", "assets/knight.json");
   }

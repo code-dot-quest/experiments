@@ -282,5 +282,33 @@
         "sprite": { "resource": "rock", "frame": "15" }
       }
     }
+  },
+  "effect": {
+    "types": {
+      "cliff-shadow-right": {
+        "passable": {},
+        "sprite": { "resource": "effects", "frame": "0" }
+      },
+      "cliff-shadow-full": {
+        "passable": {},
+        "sprite": { "resource": "effects", "frame": "1" }
+      },
+      "cliff-shadow-left": {
+        "passable": {},
+        "sprite": { "resource": "effects", "frame": "2" }
+      },
+      "cliff-transition-sand": {
+        "passable": {},
+        "sprite": { "resource": "effects", "frame": "3" }
+      },
+      "cliff-transition-grass": {
+        "passable": {},
+        "sprite": { "resource": "effects", "frame": "4" }
+      },
+      "cliff-shadow-up": {
+        "passable": {},
+        "sprite": { "resource": "effects", "frame": "6" }
+      }
+    }
   }
 }

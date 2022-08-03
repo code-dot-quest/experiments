@@ -15,3 +15,7 @@ span.editor-tile-ground {
 span.editor-tile-ground.selected {
   outline: 3px solid black;
 }
+
+#editor-elevation-slider.slider {
+  width: 8.8rem;
+}

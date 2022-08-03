@@ -10,16 +10,17 @@ type OnElevationChanged = (elevation: number) => void;
 
 export default class MapEditor {
   public selectedTile: GroundType;
-  public elevation: number;
+  public elevationEditor: number;
   protected onTileSelectedHandler: OnTileSelected;
   protected onSaveHandler: OnSave;
   protected onLoadHandler: OnLoad;
   protected onGridToggledHandler: OnGridToggled;
-  protected onElevationChangedHandler: OnElevationChanged;
+  protected onElevationChangedEditorHandler: OnElevationChanged;
+  protected onElevationChangedViewerHandler: OnElevationChanged;
 
   constructor() {
     this.selectedTile = this.getDefaultGround();
-    this.elevation = 1;
+    this.elevationEditor = 1;
     const instance = this;
     $(() => {
       for (const ground of mapEditorSpec.ground) {
@@ -49,8 +50,15 @@ export default class MapEditor {
 
       $("#editor-elevation").on("change", (event) => {
         const $el = $(event.currentTarget);
-        this.elevation = parseInt($el.val() as string);
-        if (this.onElevationChangedHandler) this.onElevationChangedHandler(this.elevation);
+        this.elevationEditor = parseInt($el.val() as string);
+        if (this.onElevationChangedEditorHandler) this.onElevationChangedEditorHandler(this.elevationEditor);
+      });
+
+      (window as any).bulmaSlider.attach();
+      $("#editor-elevation-slider").on("input", (event) => {
+        const $el = $(event.currentTarget);
+        const elevationViewer = parseInt($el.val() as string);
+        if (this.onElevationChangedViewerHandler) this.onElevationChangedViewerHandler(elevationViewer);
       });
 
       $("#editor-save").on("click", () => {
@@ -92,8 +100,12 @@ export default class MapEditor {
     this.onGridToggledHandler = handler;
   }
 
-  onElevationChanged(handler: OnElevationChanged) {
-    this.onElevationChangedHandler = handler;
+  onElevationChangedEditor(handler: OnElevationChanged) {
+    this.onElevationChangedEditorHandler = handler;
+  }
+
+  onElevationChangedViewer(handler: OnElevationChanged) {
+    this.onElevationChangedViewerHandler = handler;
   }
 
   getDefaultGround(): GroundType {

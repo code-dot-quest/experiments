@@ -48,6 +48,7 @@ export default class Demo extends Phaser.Scene {
     this.load.aseprite("effects", "assets/effects.png", "assets/effects.json");
     this.load.aseprite("tiles", "assets/tiles.png", "assets/tiles.json");
     this.load.aseprite("knight", "assets/knight.png", "assets/knight.json");
+    this.load.image("mask", "assets/mask2.png");
   }
 
   create() {
@@ -77,7 +78,14 @@ export default class Demo extends Phaser.Scene {
     mapEditor.onGridToggled((enabled) => {
       this.grid.visible = enabled;
     });
-    mapEditor.onElevationChanged((elevation) => {});
+    mapEditor.onElevationChangedEditor((newElevation) => {});
+    const mask = this.add.image(0, 0, "mask").setVisible(false).createBitmapMask();
+    mapEditor.onElevationChangedViewer((newElevation) => {
+      this.map.forEachSprite((sprite: Phaser.GameObjects.Sprite, elevation: number) => {
+        if (elevation > newElevation) sprite.setMask(mask);
+        else sprite.clearMask();
+      });
+    });
   }
 
   update(time) {
@@ -91,17 +99,17 @@ export default class Demo extends Phaser.Scene {
         if (this.preview) {
           // remove the preview
           if (this.preview.ground.kind == "erase") this.map.addTile(this.preview.x, this.preview.y, this.preview.deleted, this.preview.deletedElevation);
-          else this.map.deleteTile(this.preview.x, this.preview.y, mapEditor.elevation);
+          else this.map.deleteTile(this.preview.x, this.preview.y, mapEditor.elevationEditor);
           this.preview = undefined;
         }
         if (time - this.input.activePointer.time < 1000) {
           // create new preview
-          const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTopAtElevation(mapEditor.elevation);
+          const ground = this.map.getTile(pointerX, pointerY)?.getGroundOnTopAtElevation(mapEditor.elevationEditor);
           let success = false;
-          if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY, mapEditor.elevation);
-          else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile, mapEditor.elevation);
+          if (mapEditor.selectedTile.kind == "erase") success = this.map.deleteTile(pointerX, pointerY, mapEditor.elevationEditor);
+          else success = this.map.addTile(pointerX, pointerY, mapEditor.selectedTile, mapEditor.elevationEditor);
           if (success) {
-            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground, deletedElevation: mapEditor.elevation };
+            this.preview = { x: pointerX, y: pointerY, ground: mapEditor.selectedTile, deleted: ground, deletedElevation: mapEditor.elevationEditor };
           }
         }
       }

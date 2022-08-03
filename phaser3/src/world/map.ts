@@ -1,4 +1,4 @@
-import Tile, { GroundType, TileJson } from "./tile";
+import Tile, { GroundType, OnEachSprite, TileJson } from "./tile";
 import Movable from "./movable";
 
 export interface MapJson {
@@ -185,6 +185,14 @@ export default class Map {
       denominator *= 2;
     }
     return numerator / denominator;
+  }
+
+  forEachSprite(handler: OnEachSprite) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        this.tiles[y][x].forEachSprite(handler);
+      }
+    }
   }
 
   // json
